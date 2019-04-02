@@ -10919,7 +10919,7 @@ a:focus {
 }
 
 .topbar {
-  height: 4.375rem;
+  height: 3.5rem;
 }
 
 .topbar #sidebarToggleTop {
@@ -11050,7 +11050,7 @@ a:focus {
 }
 
 .topbar.navbar-light .navbar-nav .nav-item .nav-link {
-  color: #d1d3e2;
+  color: #d1d3e2 ;
 }
 
 .topbar.navbar-light .navbar-nav .nav-item .nav-link:hover {
@@ -11189,7 +11189,7 @@ a:focus {
 }
 
 .sidebar .sidebar-brand {
-  height: 4.375rem;
+  height: 3.5rem;
   text-decoration: none;
   font-size: 1rem;
   font-weight: 800;
@@ -11201,7 +11201,7 @@ a:focus {
 }
 
 .sidebar .sidebar-brand .sidebar-brand-icon i {
-  font-size: 2rem;
+  font-size: 0.5rem;
 }
 
 .sidebar .sidebar-brand .sidebar-brand-text {
@@ -11274,7 +11274,7 @@ a:focus {
     content: '\f105';
   }
   .sidebar .sidebar-brand .sidebar-brand-icon i {
-    font-size: 2rem;
+    font-size: 1.5rem;
   }
   .sidebar .sidebar-brand .sidebar-brand-text {
     display: inline;
@@ -11331,7 +11331,7 @@ a:focus {
     display: none;
   }
   .sidebar.toggled .sidebar-brand .sidebar-brand-icon i {
-    font-size: 2rem;
+    font-size: 1.5rem;
   }
   .sidebar.toggled .sidebar-brand .sidebar-brand-text {
     display: none;
