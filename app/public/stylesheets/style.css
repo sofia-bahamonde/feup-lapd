@@ -11393,6 +11393,10 @@ a:focus {
   background-color: #dddfeb;
 }
 
+.sidebar-dark{
+  background-color: #000; 
+}
+
 .sidebar-dark .sidebar-brand {
   color: #fff;
 }
