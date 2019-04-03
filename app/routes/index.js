@@ -11,4 +11,6 @@ router.get('/patients', function(req, res) {
   res.render('patients');
 });
 
+
+
 module.exports = router;
