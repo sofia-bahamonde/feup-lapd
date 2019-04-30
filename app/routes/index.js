@@ -37,5 +37,9 @@ router.get('/weather', function(req, res, next){
    });
 });
 
+router.get('/calendar1', function(req, res) {
+  res.render('calendar1');
+});
+
 
 module.exports = router;
