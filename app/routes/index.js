@@ -1,9 +1,19 @@
 var express = require('express');
 var router = express.Router();
+var pool = require('../database.js');
 
 /* GET home page. */
 router.get('/', function(req, res) {
-  res.render('index',  {layout: 'index-layout.hbs'});
+  pool.query('SELECT * FROM users ORDER BY id ASC', (error, results) => {
+    if (error) {
+      throw error
+    }
+
+    res.render('index',  {'user': results.rows[0]});
+  })
+
+
+
 });
 
 /* GET patients page. */

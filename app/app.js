@@ -20,6 +20,7 @@ app.engine('hbs', hbs({
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
 
+
 app.use(favicon());
 app.use(logger('dev'));
 app.use(bodyParser.json());
@@ -29,6 +30,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
 app.use('/users', users);
+
+  
 
 /// catch 404 and forwarding to error handler
 app.use(function(req, res, next) {
@@ -61,5 +64,8 @@ app.use(function(err, req, res, next) {
     });
 });
 
+app.listen(8080,() => {
+    console.log(`App running on port 8080.`)
+  })
 
 module.exports = app;
