@@ -7,7 +7,7 @@ COPY ./ ./
 
 RUN touch database.sql
 
-RUN cat ./src/schema.sql >> ./database.sql
+RUN cat ./src/seed.sql >> ./database.sql
 
 RUN cp ./database.sql ../docker-entrypoint-initdb.d/
 

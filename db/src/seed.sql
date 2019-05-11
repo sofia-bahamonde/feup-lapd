@@ -1,19 +1,13 @@
-DROP DATABASE IF EXISTS lapd;
-
-CREATE DATABASE lapd;
-USE lapd;
-SET foreign_key_checks = 1;
-
 CREATE TABLE Patient(
-    id INT PRIMARY KEY AUTO_INCREMENT,
+    id SERIAL PRIMARY KEY,
      name VARCHAR(128) NOT NULL,
      apiKey VARCHAR(256) NOT NULL,
      birthdayDate INT,
-     city VARCHAR(64) NOT NULL,
+     city VARCHAR(64) NOT NULL
 );
 
 CREATE TABLE Therapist(
-    id INT PRIMARY KEY AUTO_INCREMENT,
+    id SERIAL PRIMARY KEY,
     hashedPassword VARCHAR(128),
     email VARCHAR(128) UNIQUE,
     name VARCHAR(128) NOT NULL
@@ -37,7 +31,7 @@ CREATE TABLE Consults(
 );
 
 CREATE TABLE Mood(
-    id INT PRIMARY KEY AUTO_INCREMENT,
+    id SERIAL PRIMARY KEY,
     value INT,
     date INT,
     patient INT,
@@ -45,11 +39,11 @@ CREATE TABLE Mood(
     FOREIGN KEY(patient)
         REFERENCES Patient(id)
          ON DELETE CASCADE
-         ON UPDATE CASCADE,
+         ON UPDATE CASCADE
 );
 
 CREATE TABLE Hashtag(
-    id INT PRIMARY KEY AUTO_INCREMENT,
+    id SERIAL PRIMARY KEY ,
     name VARCHAR(64) NOT NULL
     
 );
@@ -70,7 +64,7 @@ CREATE TABLE HashtagMood(
 );
 
 CREATE TABLE Weather(
-    id INT PRIMARY KEY AUTO_INCREMENT,
+    id SERIAL PRIMARY KEY,
     minTemperature INT NOT NULL,
     maxTemperature INT NOT NULL,
     city VARCHAR(64) NOT NULL,
@@ -78,7 +72,7 @@ CREATE TABLE Weather(
 );
 
 CREATE TABLE Events(
-    id INT PRIMARY KEY AUTO_INCREMENT,
+    id SERIAL PRIMARY KEY,
     date INT NOT NULL,
     description VARCHAR(256) NOT NULL,
     location VARCHAR(128),
@@ -88,13 +82,13 @@ CREATE TABLE Events(
     FOREIGN KEY(patient)
         REFERENCES Patient(id)
          ON DELETE CASCADE
-         ON UPDATE CASCADE,
+         ON UPDATE CASCADE
 );
 
 CREATE TABLE Category(
-    id INT PRIMARY KEY AUTO_INCREMENT,
+    id SERIAL PRIMARY KEY,
     name  VARCHAR(64) NOT NULL,
-    colorVARCHAR(64) NOT NULL
+    color VARCHAR(64) NOT NULL
 );
 
 CREATE TABLE CategoryEvent(
