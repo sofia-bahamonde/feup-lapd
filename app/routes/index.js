@@ -31,8 +31,6 @@ router.get('/register', function(req, res) {
 });
 
 
-<<<<<<< HEAD
-=======
 router.get('/weather', function(req, res, next){
   let city = req.body.city;
   url = url+'Porto'+"&"+appId;
@@ -50,6 +48,5 @@ router.get('/calendar1', function(req, res) {
   res.render('calendar1');
 });
 
->>>>>>> 9a963adf24b0420fbc8664c79ee91e19c9fd3b8b
 
 module.exports = router;
