@@ -1,9 +1,10 @@
 CREATE TABLE Patient(
-    id SERIAL PRIMARY KEY,
+     id SERIAL PRIMARY KEY,
      name VARCHAR(128) NOT NULL,
      apiKey VARCHAR(256) NOT NULL,
-     birthdayDate INT,
-     city VARCHAR(64) NOT NULL
+     birthdayDate VARCHAR(10) NOT NULL,
+     city VARCHAR(64) NOT NULL,
+     job VARCHAR(128) NOT NULL
 );
 
 CREATE TABLE Therapist(
