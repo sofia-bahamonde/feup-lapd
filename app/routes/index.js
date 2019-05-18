@@ -8,20 +8,25 @@ let units  = '&units=metric';
 var request = require('request');
 
 /* GET home page. */
-router.get('/', function(req, res) {
-  pool.query('SELECT * FROM users ORDER BY id ASC', (error, results) => {
-    if (error) {
-      throw error
-    }
+// router.get('/', function(req, res) {
+//   pool.query('SELECT * FROM users ORDER BY id ASC', (error, results) => {
+//     if (error) {
+//       throw error
+//     }
 
-    res.render('index',  {'user': results.rows[0]});
-  })
+//     res.render('index',  {'user': results.rows[0]});
+//   })
 
-});
+// });
 
 /* GET patients page. */
 router.get('/patients', function(req, res) {
   console.log('pole');
+  res.render('patients');
+});
+
+router.get('/patients/:patientId', function(req, res) {
+  const clientId = req.params.patientId
   res.render('patients');
 });
 

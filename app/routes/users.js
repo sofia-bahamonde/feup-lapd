@@ -81,7 +81,12 @@ function getAccessToken(oAuth2Client, callback) {
  */
 function listEvents(auth) {
   const calendar = google.calendar({version: 'v3', auth});
-let sports_id='Sports';
+  
+  let sports_id='Sports';
+  let sleep_id='Sleep';
+  let social_id='Social';
+  let work_id='Work';
+  let relax_id='Relax';
 
  
   calendar.calendarList.list({
@@ -92,8 +97,13 @@ let sports_id='Sports';
     for(let i=0; i < result.data.items.length;i++){
      // console.log(result.data.items[i].summary);
       if(result.data.items[i].summary=='Sports'){
-       console.log(result.data.items[i].id);
-      sports_id=result.data.items[i].id;
+        sports_id=result.data.items[i].id;
+      }
+      else if(result.data.items[i].summary=='Sleep'){
+        sleep_id=result.data.items[i].id;
+      }
+      else if(result.data.items[i].summary=='Social'){
+        sleep_id=result.data.items[i].id;
       }
     }
     calendar.events.list({
@@ -107,8 +117,8 @@ let sports_id='Sports';
       const events = res.data.items;
       if (events.length) {
         console.log('Upcoming 10 events:');
-        for(let i=0; i< events.length;i++)
-        console.log(events[i])
+        // for(let i=0; i< events.length;i++)
+        // console.log(events[i])
         // events.map((event, i) => {
         //   const start = event.start.dateTime || event.start.date;
         //   console.log(`${start} - ${event.summary}`);
@@ -124,6 +134,7 @@ let sports_id='Sports';
 
 }
 setInterval(function(){ fs.readFile('./credentials.json', (err, content) => {
+  console.log(JSON.parse(content))
   if (err) return console.log('Error loading client secret file:', err);
   // Authorize a client with credentials, then call the Google Calendar API.
   authorize(JSON.parse(content), listEvents);
