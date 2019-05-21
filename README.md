@@ -1,12 +1,10 @@
 # feup-lapd
 
-- run: docker-compose up
-- apps runs on localhost (wihtout port)
-- pgadmin runs on localhost:5050
-- go to locahost:5050
-- user: 'postgres',
-- host: 'postgres',
-- database: 'postgres',
-- password: 'postgres'
-- select postgres db > tools > query tools
-- drag seed.sql to text field (db > src> seed.sql)
+- sudo apt update
+- sudo apt install postgresql postgresql-contrib
+- sudo -i -u postgres
+- createdb lapd
+- psql -d lapd 
+- ALTER USER postgres PASSWORD 'postgres'; (não esquecer o ponto e virgula!!!)
+- Copy paste do seed.sql para o terminal (colocar ponto e virgula no fim!!!!)
+- \dt (para ver as tabelas foram criadas)
