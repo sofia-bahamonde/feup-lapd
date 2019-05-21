@@ -14,6 +14,7 @@ router.get('/patients', function(req, res) {
   res.render('patients');
 });
 
+
 router.get('/weather', function(req, res, next){
   let city = req.body.city;
   url = url+'Porto'+"&"+appId;

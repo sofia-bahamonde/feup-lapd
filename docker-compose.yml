@@ -10,8 +10,8 @@ services:
     networks:
       - lapd-net
     volumes:
-      - /home/sofia/feup-lapd/app:/app
-      - /home/sofia/feup-lapd/app/node_modules
+      - /home/daniel/Documentos/feup-lapd/app:/app
+      - /home/daniel/Documentos/feup-lapd/app/node_modules
     depends_on:
       - postgres
 
