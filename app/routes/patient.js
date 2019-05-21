@@ -2,13 +2,13 @@ var express = require('express');
 var router = express.Router();
 var pool = require('../database.js');
 
-/* GET patients page. */
+/* register patient page */
 router.get('/register', function(req, res) {
     res.render('register_patient');
   });
 
 
-/* Register new patient */
+/* creates a new patient in the databse */
 router.post('/create', function(req, res) {
     console.log(req.body);
     let name = req.body.name;
@@ -29,6 +29,19 @@ router.post('/create', function(req, res) {
         res.render('index');
     })
 });
+
+/* list all patients page*/
+router.get('/list', function(req, res) {
+
+    pool.query('select * from patient', (error, result) => {
+        if (error) {
+            throw error;
+        }
+        console.log(result.rows)
+        res.render('patients');
+    })
+    
+  });
 
 
 

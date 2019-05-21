@@ -1,7 +1,4 @@
 FROM node:8.12 AS builder
-
-#RUN apt install curl python pkgconfig python-dev openssl-dev libffi-dev musl-dev make gcc g++
-
 # Define working directory and copy source
 WORKDIR /tmp
 COPY . .
@@ -18,10 +15,12 @@ WORKDIR /app
 
 COPY ./package*.json ./
 RUN npm install
+RUN npm install nodemon
+
 
 COPY . ./
 
 COPY --from=builder /tmp/ .
 
 EXPOSE 8080
-CMD ["npm","start"]
+CMD ["npm","run","start"]
