@@ -8,12 +8,6 @@ var request = require('request');
 
 
 
-/* GET patients page. */
-router.get('/patients', function(req, res) {
-  console.log('pole');
-  res.render('patients');
-});
-
 router.get('/weather', function(req, res, next){
   let city = req.body.city;
   url = url+'Porto'+"&"+appId;
