@@ -14,3 +14,32 @@
 <link href="/stylesheets/style.css" rel="stylesheet">
 
 <link href="/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+
+<link href='/vendor/fullcalendar/core/main.css' rel='stylesheet' />
+<link href='/vendor/fullcalendar/daygrid/main.css' rel='stylesheet' />
+
+<script src='/vendor/fullcalendar/core/main.js'></script>
+<script src='/vendor/fullcalendar/daygrid/main.js'></script>
+<script src='/vendor/fullcalendar/google-calendar/main.js'></script>
+
+    <script>
+
+      document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('calendar');
+
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+                
+            googleCalendarApiKey: 'AIzaSyC766H9R6MfgpDm2wH-zULsf_EebI8Icrk',
+            eventSources: [
+                {
+                googleCalendarId: 'ok7eb98ttmhk3v22k9d3at6m7k@group.calendar.google.com'
+                }
+            
+            ]
+            });
+
+        calendar.render();
+      });
+
+
+    </script>
