@@ -1,0 +1,43 @@
+<!-- Begin Page Content -->
+<div class="container-fluid">
+
+
+  <!-- DataTales Example -->
+  <div class="card shadow mb-4">
+    <div class="card-header py-3">
+      <h6 class="m-0 font-weight-bold text-secondary">List of Patients</h6>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Job</th>
+              <th>City</th>
+              <th>Birthdate</th>
+              <th class=" d-flex justify-content-center">Add iMood</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each users}}
+            <tr>
+              <td>{{this.name}}</td>
+              <td>{{this.job}}</td>
+              <td>{{this.city}}</td>
+              <td>{{this.birthdaydate}}</td>
+              <td class=" d-flex justify-content-center">
+                  <a class="btn btn-primary btn-circle btn-sm"  data-id={{this.id}} href="{{this.id}}/addMood/form">
+                    <i class="fas fa-plus"></i>
+                  </a>
+              </td>
+            </tr>
+            {{/each}}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>
+<!-- /.container-fluid -->

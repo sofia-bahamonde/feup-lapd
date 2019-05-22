@@ -34,7 +34,7 @@ CREATE TABLE Consults(
 CREATE TABLE Mood(
     id SERIAL PRIMARY KEY,
     value INT,
-    date INT,
+    moodDate date NOT NULL,
     patient INT,
 
     FOREIGN KEY(patient)
