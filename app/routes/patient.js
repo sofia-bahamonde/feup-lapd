@@ -10,7 +10,6 @@ router.get('/register', function(req, res) {
 
 /* creates a new patient in the databse */
 router.post('/create', function(req, res) {
-    console.log(req.body);
     let name = req.body.name;
     let key = req.body.key;
     let city = req.body.city;
@@ -37,8 +36,9 @@ router.get('/list', function(req, res) {
         if (error) {
             throw error;
         }
-        console.log(result.rows)
-        res.render('patients');
+        console.log(result.rows);
+        var users = result.rows;
+        res.render('list_patients', {users});
     })
     
   });
