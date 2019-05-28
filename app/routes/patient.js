@@ -1,6 +1,18 @@
 var express = require('express');
 var router = express.Router();
 var pool = require('../database.js');
+const {google} = require('googleapis');
+const fs = require('fs');
+const readline = require('readline');
+var request = require('request');
+var user = 0;
+
+// If modifying these scopes, delete token.json.
+const SCOPES = ['https://www.googleapis.com/auth/calendar.readonly'];
+// The file token.json stores the user's access and refresh tokens, and is
+// created automatically when the authorization flow completes for the first
+// time.
+
 
 let months ={
     janeiro: "01",
@@ -21,6 +33,40 @@ let months ={
 /* register patient page */
 router.get('/register/form', function(req, res) {
     res.render('patient/register_patient');
+  });
+
+
+  router.get('/update/:patientId', async(req, res) =>{
+    const clientId = req.params.patientId
+    let query =`SELECT apiKey FROM Patient WHERE id=${clientId}`
+    let promises = []
+
+    // result = await pool.query(query)
+    // pool.query(query, async(error, result) => {
+    //   if (error) {
+    //     console.log(error)
+    //       throw error
+    //   }
+      user= clientId
+      try{
+        result = await pool.query(query)
+      let credentials =JSON.parse(result.rows[0].apikey)
+     // console.log(result.rows[0].apikey)
+       promises.push(authorize(credentials,'Sports', listEvents))
+       promises.push(authorize(credentials,'Sleep', listEvents))
+       promises.push(authorize(credentials,'Social', listEvents))
+       promises.push(authorize(credentials,'Work', listEvents))
+       promises.push(authorize(credentials,'Relax', listEvents))
+
+       await Promise.all(promises)
+       
+      }
+      catch(err){
+        console.log(err)
+      }
+    
+   
+  res.render('index')
   });
 
 
@@ -101,6 +147,107 @@ router.post('/:patient/addMood', function(req, res) {
      })
      
    });
+
+
+   function authorize(credentials,calendarId, callback) {
+    const {client_secret, client_id, redirect_uris} = credentials.installed;
+    const oAuth2Client = new google.auth.OAuth2(
+        client_id, client_secret, redirect_uris[0]);
+  
+    fs.readFile("token"+user+".json", (err, token) => {
+      if (err) return getAccessToken(oAuth2Client, callback);
+      oAuth2Client.setCredentials(JSON.parse(token));
+      callback(oAuth2Client,calendarId);
+    });
+  }
+  
+  /**
+   * Get and store new token after prompting for user authorization, and then
+   * execute the given callback with the authorized OAuth2 client.
+   * @param {google.auth.OAuth2} oAuth2Client The OAuth2 client to get token for.
+   * @param {getEventsCallback} callback The callback for the authorized client.
+   */
+  function getAccessToken(oAuth2Client, callback) {
+    const authUrl = oAuth2Client.generateAuthUrl({
+      access_type: 'offline',
+      scope: SCOPES,
+    });
+    console.log('Authorize this app by visiting this url:', authUrl);
+    const rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout,
+    });
+    rl.question('Enter the code from that page here: ', (code) => {
+      rl.close();
+      oAuth2Client.getToken(code, (err, token) => {
+        if (err) return console.error('Error retrieving access token', err);
+        oAuth2Client.setCredentials(token);
+        // Store the token to disk for later program executions
+        fs.writeFile("token"+user+".json", JSON.stringify(token), (err) => {
+          if (err) return console.error(err);
+        });
+        callback(oAuth2Client);
+      });
+    });
+  }
+  
+  /**
+   * Lists the next 10 events on the user's primary calendar.
+   * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
+   */
+   listEvents = async(auth, calendarName)=>{
+    const calendar = google.calendar({version: 'v3', auth});
+     console.log("CALENDAR ID:"+calendarName)
+    // let sports_id='Sports';
+    // let sleep_id='Sleep';
+    // let social_id='Social';
+    // let work_id='Work';
+    // let relax_id='Relax';
+    let calendarId = calendarName
+   
+
+   try{
+    calendar.calendarList.list({
+      auth: auth,
+      maxResults: 100
+    },
+    function (err, result) {
+      for(let i=0; i < result.data.items.length;i++){
+       // console.log(result.data.items[i].summary);
+        if(result.data.items[i].summary==calendarName){
+          calendarId=result.data.items[i].id;
+        }
+      }
+      calendar.events.list({
+        calendarId: calendarId,
+        timeMin: (new Date()).toISOString(),
+        maxResults: 10,
+        singleEvents: true,
+        orderBy: 'startTime',
+      }, (err, res) => {
+        if (err) return console.log('The API returned an error: ' + err);
+        const events = res.data.items;
+        if (events.length) {
+          console.log('Upcoming 10 events:');
+          for(let i=0; i< events.length;i++)
+          console.log(events[i])
+          // events.map((event, i) => {
+          //   const start = event.start.dateTime || event.start.date;
+          //   console.log(`${start} - ${event.summary}`);
+          // });
+          return events
+        } else {
+          console.log('No upcoming events found.');
+        }
+      });
+    }
+  );
+   }
+   catch(err){
+     console.log(err)
+    
+   }
+}
 
 
 module.exports = router;
