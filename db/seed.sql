@@ -70,7 +70,7 @@ CREATE TABLE Weather(
     maxTemperature INT NOT NULL,
     city VARCHAR(64) NOT NULL,
     rain INT NOT NULL,
-    date INT NOT NULL
+    dateWeather date NOT NULL
 );
 
 CREATE TABLE Events(
