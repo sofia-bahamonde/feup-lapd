@@ -9,6 +9,7 @@ var hbs = require('express-handlebars');
 var routes = require('./routes/index');
 var users = require('./routes/users');
 var patient = require('./routes/patient');
+var mood = require('./routes/mood');
 
 var app = express();
 
@@ -32,6 +33,7 @@ app.use(express.static(path.join(__dirname, '/public')));
 app.use('/', routes);
 app.use('/users', users);
 app.use('/patient', patient);
+app.use('/mood', mood);
 
   
 
