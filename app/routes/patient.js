@@ -182,16 +182,28 @@ router.post('/register', async (req, res) => {
     })
 });
 
-/* list all patients page*/
-router.get('/list', function(req, res) {
+/* manage patients page*/
+router.get('/manage', function(req, res) {
 
     pool.query('select * from patient', (error, result) => {
         if (error) {
             throw error;
         }
-        console.log(result.rows);
         let users = result.rows;
         res.render('patient/list_patients', {users});
+    })
+    
+  });
+
+/* returns patients */
+router.get('/list', function(req, res) {
+    console.log("fsfdf");
+
+    pool.query('select * from patient', (error, result) => {
+        if (error) {
+            throw error;
+        }
+        res.json({ success: true, users:result.rows  });
     })
     
   });
@@ -227,18 +239,44 @@ router.post('/:patient/addMood', function(req, res) {
 
     query = query.substring(0, query.length -1);
 
-    console.log(query);
-
     pool.query(query, (error, result) => {
         if (error) {
             throw error;
         }
-        console.log(result);
         res.render('index');
      })
      
-   });
+});
 
+router.get('/:patient/dashboard', async(req, res) => {
+    try{
+        let name_query = `SELECT name FROM patient WHERE patient.id=` + req.params.patient;
+     
+        let result1 = await pool.query(name_query);
+        let name = result1.rows[0].name;
+
+        let mood_query = "select mood.value, EXTRACT (YEAR FROM mood.moodDate) AS YEAR, EXTRACT (MONTH FROM mood.moodDate) AS MONTH, EXTRACT (DAY FROM mood.moodDate) AS DAY " +
+        "from mood inner join patient on  mood.patient = patient.id where mood.patient=" + req.params.patient;
+       
+        let result2 = await pool.query(mood_query);
+
+        let mood = result2.rows;
+  
+        for(let i =0; i <mood.length; i++){
+          mood[i].date = mood[i].day + "/" + mood[i].month + "/" + mood[i].year;
+        }
+    
+        mood = JSON.stringify(mood);
+  
+        res.render('dashboard/mood', {mood, name });
+
+        
+        }
+        catch(err){
+          console.log(err)
+        }
+});
+   
 
    function authorize(credentials,calendarId, callback) {
     const {client_secret, client_id, redirect_uris} = credentials.installed;
