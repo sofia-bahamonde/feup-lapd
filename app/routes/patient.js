@@ -174,8 +174,6 @@ router.get('/manage', function(req, res) {
 router.get('/list', async(req, res) =>{
     console.log("fsfdf");
 
-    await getEventsPatient(1,1558310400,1559347200)
-
     pool.query('select * from patient', (error, result) => {
         if (error) {
             throw error;
