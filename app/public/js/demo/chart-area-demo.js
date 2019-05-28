@@ -29,10 +29,14 @@ function number_format(number, decimals, dec_point, thousands_sep) {
 
 // Area Chart Example
 var ctx = document.getElementById("myAreaChart");
+var mood= $('#myAreaChart').data('mood');
+var days = mood.map(a => a.day);
+console.log(days);
+console.log(mood);
 var myLineChart = new Chart(ctx, {
   type: 'line',
   data: {
-    labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+    labels:  mood.map(a => a.date),
     datasets: [{
       label: "Mood",
       lineTension: 0.3,
@@ -46,7 +50,7 @@ var myLineChart = new Chart(ctx, {
       pointHoverBorderColor: "rgba(78, 115, 223, 1)",
       pointHitRadius: 10,
       pointBorderWidth: 2,
-      data: [5, 3, 2, 3, 4, 5, 4],
+      data:  mood.map(a => a.value),
     }],
   },
   options: {
@@ -69,12 +73,13 @@ var myLineChart = new Chart(ctx, {
           drawBorder: false
         },
         ticks: {
-          maxTicksLimit: 7
+          maxTicksLimit: 100
         }
       }],
       yAxes: [{
         ticks: {
-          maxTicksLimit: 5,
+          beginAtZero: true,
+          maxTicksLimit: 10,
           padding: 10,
           // Include a dollar sign in the ticks
           callback: function(value, index, values) {

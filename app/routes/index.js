@@ -7,13 +7,9 @@ let appId  = 'appid=eb0ee711a1bef9907ac2aa0d6f223400';
 let units  = '&units=metric'; 
 var request = require('request');
 
-
-/* GET patients page. */
-router.get('/patients', function(req, res) {
-  console.log('pole');
-  res.render('patients');
+router.get("/",  function(req, res) {
+  res.render('dashboard');
 });
-
 
 
 /* GET patients page. */

@@ -29,24 +29,21 @@
 
 <!-- Nav Item - Pages Collapse Menu -->
 <li class="nav-item">
-    <a class="nav-link" href="/patient/list" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
-    <i class="fas fa-user-injured"></i>
-    <span>List Patients</span>
+    <a class="nav-link" href="/patient/manage" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+    <i class="fas fa-cog"></i>
+    <span>Manage</span>
     </a>
 </li>
 
 <li class="nav-item">
-    <a class="nav-link" href="#" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
-    <i class="fab fa-think-peaks"></i>
-    <span>Mood</span>
+    <a class="nav-link collapsed" id="list_patients" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+        <i class="fas fa-user-injured"></i>
+        <span>List</span>
     </a>
-</li>
-
-<li class="nav-item">
-    <a class="nav-link" href="#" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
-    <i class="fas fa-running"></i>
-    <span>Activities</span>
-    </a>
+    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+        <div id="patients" class="bg-white py-2 collapse-inner rounded">
+        </div>
+    </div>
 </li>
 
 <!-- Divider -->
@@ -59,3 +56,39 @@
 
 </ul>
 <!-- End of Sidebar -->
+
+<script>
+
+function appendHtml(el, str) {
+  var div = document.createElement('div');
+  div.innerHTML = str;
+  while (div.children.length > 0) {
+    el.appendChild(div.children[0]);
+  }
+}
+
+$('#list_patients').on('click', function(event) {
+    event.preventDefault();
+    console.log("fsdfsd");
+     $.ajax({
+        url: '/patient/list',
+        method: 'GET',
+        }).done(function(res) {
+            if (res.success) {
+            console.log(res.users);
+            
+            var list = document.getElementById("patients");
+            list.innerHTML = '';
+
+            for(let i =0; i <res.users.length; i++){
+                let patient = `<a class="collapse-item" href="/patient/` + res.users[i].id + `/dashboard">` + res.users[i].name + `</a>`;
+                appendHtml(list,patient);
+            }
+            
+        } else {
+            console.log('error...ajax');
+            }
+})});
+
+
+</script>
