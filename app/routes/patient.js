@@ -248,6 +248,35 @@ router.post('/:patient/addMood', function(req, res) {
      
 });
 
+
+router.get('/:patient/calendar', async(req, res) => {
+
+
+  try{
+
+
+    var calendarEvents = [  // change to array of events
+      {
+      title: 'Event1',
+      start: '2019-05-30'
+    },
+    {
+      title: 'Event2',
+      start: '2019-05-31'
+    }];
+
+
+    calendarEvents = JSON.stringify(calendarEvents);
+
+    res.render('calendar', {calendarEvents, name});
+
+  }
+  catch(err){
+    console.log(err)
+  }
+
+});
+
 router.get('/:patient/dashboard', async(req, res) => {
     try{
         let name_query = `SELECT name FROM patient WHERE patient.id=` + req.params.patient;
