@@ -266,23 +266,10 @@ router.post('/:patient/addMood', function(req, res) {
 
 
 router.get('/:patient/calendar', async(req, res) => {
-
-
-  
+ 
   try{
 
-
-    var calendarEvents = [  // change to array of events
-      {
-      title: 'Event1',
-      start: ' 2019-05-30T09:30:00',
-      color:'black'
-    },
-    {
-      title: 'Event2',
-      start: '2019-05-31'
-    }];
-
+   let calendarEvents  = await getEventsPatient(req.params.patient,1558310400, 1559347200);
 
     calendarEvents = JSON.stringify(calendarEvents);
 
