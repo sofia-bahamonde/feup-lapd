@@ -4,7 +4,8 @@ CREATE TABLE Patient(
      apiKey VARCHAR(512) NOT NULL,
      birthdayDate VARCHAR(15) NOT NULL,
      city VARCHAR(64) NOT NULL,
-     job VARCHAR(128) NOT NULL
+     job VARCHAR(128) NOT NULL,
+     lastUpdate INT 
 );
 
 CREATE TABLE Therapist(
@@ -70,13 +71,14 @@ CREATE TABLE Weather(
     maxTemperature INT NOT NULL,
     city VARCHAR(64) NOT NULL,
     rain INT NOT NULL,
-    date INT NOT NULL
+    time INT NOT NULL
 );
 
 CREATE TABLE Events(
     id SERIAL PRIMARY KEY,
-    date INT NOT NULL,
-    description VARCHAR(256) NOT NULL,
+    initialDate INT NOT NULL,
+    finalDate INT NOT NULL,
+    description VARCHAR(256),
     location VARCHAR(128),
     summary VARCHAR(256) NOT NULL,
     patient INT NOT NULL,
