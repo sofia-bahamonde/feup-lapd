@@ -269,7 +269,7 @@ router.get('/:patient/calendar', async(req, res) => {
  
   try{
 
-   let calendarEvents  = await getEventsPatient(req.params.patient,1558310400, 1559347200);
+    let calendarEvents  = await getEventsPatient(req.params.patient,1558310400, 1559347200);
 
     calendarEvents = JSON.stringify(calendarEvents);
 

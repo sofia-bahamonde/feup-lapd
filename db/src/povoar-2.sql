@@ -5,3 +5,12 @@ INSERT INTO Patient(id,name,apiKey,birthdayDate,city,job) VALUES (4,'Daniel Mach
 INSERT INTO Patient(id,name,apiKey,birthdayDate,city,job) VALUES (5,'Sofia Machado','3132',862617600,'Coimbra','trolha');
 INSERT INTO Patient(id,name,apiKey,birthdayDate,city,job) VALUES (6,'Diogo Machado','3132',862617600,'Lisboa','trolha');
 
+INSERT INTO Weather( id, minTemperature, maxTemperature, city, rain, dateWeather) VALUES (1, 20, 25, 'Lisboa', 421, '2019-05-30');
+INSERT INTO Weather( id, minTemperature, maxTemperature, city, rain, dateWeather) VALUES (1, 20, 25, 'Lisboa', 421, '2019-05-30');
+INSERT INTO Weather( id, minTemperature, maxTemperature, city, rain, dateWeather) VALUES (1, 20, 25, 'Lisboa', 421, '2019-05-30');
+INSERT INTO Weather( id, minTemperature, maxTemperature, city, rain, dateWeather) VALUES (1, 20, 25, 'Lisboa', 421, '2019-05-30');
+INSERT INTO Weather( id, minTemperature, maxTemperature, city, rain, dateWeather) VALUES (1, 20, 25, 'Lisboa', 421, '2019-05-30');
+INSERT INTO Weather( id, minTemperature, maxTemperature, city, rain, dateWeather) VALUES (1, 20, 25, 'Lisboa', 421, '2019-05-30');
+INSERT INTO Weather( id, minTemperature, maxTemperature, city, rain, dateWeather) VALUES (1, 20, 25, 'Lisboa', 421, '2019-05-30');
+INSERT INTO Weather( id, minTemperature, maxTemperature, city, rain, dateWeather) VALUES (1, 20, 25, 'Lisboa', 421, '2019-05-30');
+
