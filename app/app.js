@@ -10,6 +10,7 @@ var routes = require('./routes/index');
 var users = require('./routes/users');
 var patient = require('./routes/patient');
 var mood = require('./routes/mood');
+var calendar = require('./routes/calendar');
 
 var app = express();
 
@@ -34,6 +35,7 @@ app.use('/', routes);
 app.use('/users', users);
 app.use('/patient', patient);
 app.use('/mood', mood);
+app.use('/calendar',calendar);
 
   
 
