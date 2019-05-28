@@ -45,20 +45,28 @@ router.get('/register/form', function(req, res) {
     res.render('patient/register_patient');
   });
 
+router.get('/activities', async(req, res) =>{
+  if(!req.body)
+    res.status(400)
+  try{
+  const query = `SELECT Category.name, SUM((Events.finalDate -Events.initialDate)) AS duration FROM Events JOIN CategoryEvent ON CategoryEvent.eventId = Events.id JOIN Category ON CategoryEvent.categoryId = Category.id WHERE Events.patient=${req.body.patientId} AND Events.initialDate > ${req.body.date1} AND Events.finalDate < ${req.body.date2}GROUP BY Category.name;`
+  let response = await pool.query(query)
+  res.status(200)
+  res.send(response.rows)
+  }
+  catch(err){
+    res.status(400)
+    res.send(err.msg)
+  }
+});
+
 
 router.get('/update/:patientId', async(req, res) =>{
     const clientId = req.params.patientId
     let query =`SELECT apiKey FROM Patient WHERE id=${clientId}`
     let promises = []
-
-    // result = await pool.query(query)
-    // pool.query(query, async(error, result) => {
-    //   if (error) {
-    //     console.log(error)
-    //       throw error
-    //   }
-    user= clientId
-    try{
+      user= clientId
+      try{
         result = await pool.query(query)
     let credentials =JSON.parse(result.rows[0].apikey)
     // console.log(result.rows[0].apikey)
@@ -365,7 +373,6 @@ router.get('/:patient/dashboard', async(req, res) => {
     },
     async (err, result) =>{
       for(let i=0; i < result.data.items.length;i++){
-       // console.log(result.data.items[i].summary);
         if(result.data.items[i].summary==calendarName){
           calendarId=result.data.items[i].id;
         }
@@ -396,7 +403,6 @@ router.get('/:patient/dashboard', async(req, res) => {
 
           query = `UPDATE Patient SET lastUpdate=${biggestDate} WHERE id=${user}`
           result = await pool.query(query)
-          console.log(query)
           
         } else {
           console.log('No upcoming events found.');
