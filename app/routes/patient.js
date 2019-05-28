@@ -75,6 +75,11 @@ router.get('/update/:patientId', async(req, res) =>{
 res.render('index')
 });
 
+router.get('/events',async(req,res) =>{
+  if(!req.body)
+  res.status(400)
+});
+
 
 // const insertWeather = async(city) => {
 
@@ -192,8 +197,10 @@ router.get('/manage', function(req, res) {
   });
 
 /* returns patients */
-router.get('/list', function(req, res) {
+router.get('/list', async(req, res) =>{
     console.log("fsfdf");
+
+    await getEventsPatient(1,1558310400,1559347200)
 
     pool.query('select * from patient', (error, result) => {
         if (error) {
@@ -205,23 +212,10 @@ router.get('/list', function(req, res) {
   });
 
 router.get('/:patient/calendar', async(req, res) => {
-
-
-  
+ 
   try{
 
-
-    var calendarEvents = [  // change to array of events
-      {
-      title: 'Event1',
-      start: ' 2019-05-30T09:30:00',
-      color:'black'
-    },
-    {
-      title: 'Event2',
-      start: '2019-05-31'
-    }];
-
+   let calendarEvents  = await getEventsPatient(req.params.patient,1558310400, 1559347200);
 
     calendarEvents = JSON.stringify(calendarEvents);
 
@@ -371,6 +365,20 @@ const insertEvent = async(event,categoryName) => {
   }
 }
 
+const getEventsPatient = async(patientId,date1, date2) =>{
+  const query = `SELECT Events.summary as title, Events.initialDate as start, Events.finalDate as end, Category.color FROM
+  Events JOIN CategoryEvent ON Events.id = categoryEvent.eventId JOIN Category ON Category.id = categoryEvent.categoryId Where Events.patient=${patientId} AND
+  Events.initialDate > ${date1} AND Events.finalDate < ${date2};`
+  let result = await pool.query(query)
+  console.log(result.rows)
+  
+  for(let i= 0; i<result.rows.length; i++){
+    result.rows[i].start = new Date(result.rows[i].start*1000).toJSON();
+    result.rows[i].end = new Date(result.rows[i].end*1000).toJSON();
+  }
+  return result.rows;
+  
+}
 
 
 module.exports = router;
