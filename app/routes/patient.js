@@ -8,6 +8,15 @@ var request = require('request');
 var user = 0;
 var categories = Object.freeze({"Sports":1, "Sleep":2, "Social":3, "Work":4,"Relax":5})
 
+let url = 'http://api.openweathermap.org/data/2.5/weather?q='
+let appId = 'appid=eb0ee711a1bef9907ac2aa0d6f223400';
+
+var coordenates = Object.freeze({"Lisboa": "38.744098,-9.158084", 
+                                "Porto":"41.162147,-8.621652" , 
+                                "Coimbra":"40.225587,-8.452290" , 
+                                "Aveiro":"40.628093,-8.643259"});
+
+
 // If modifying these scopes, delete token.json.
 const SCOPES = ['https://www.googleapis.com/auth/calendar.readonly'];
 // The file token.json stores the user's access and refresh tokens, and is
@@ -52,35 +61,116 @@ router.get('/activities', async(req, res) =>{
 });
 
 
-  router.get('/update/:patientId', async(req, res) =>{
+router.get('/update/:patientId', async(req, res) =>{
     const clientId = req.params.patientId
     let query =`SELECT apiKey FROM Patient WHERE id=${clientId}`
     let promises = []
       user= clientId
       try{
         result = await pool.query(query)
-      let credentials =JSON.parse(result.rows[0].apikey)
-     // console.log(result.rows[0].apikey)
-       promises.push(authorize(credentials,'Sports', listEvents))
-       promises.push(authorize(credentials,'Sleep', listEvents))
-       promises.push(authorize(credentials,'Social', listEvents))
-       promises.push(authorize(credentials,'Work', listEvents))
-       promises.push(authorize(credentials,'Relax', listEvents))
+    let credentials =JSON.parse(result.rows[0].apikey)
+    // console.log(result.rows[0].apikey)
+    promises.push(authorize(credentials,'Sports', listEvents))
+    promises.push(authorize(credentials,'Sleep', listEvents))
+    promises.push(authorize(credentials,'Social', listEvents))
+    promises.push(authorize(credentials,'Work', listEvents))
+    promises.push(authorize(credentials,'Relax', listEvents))
 
-       await Promise.all(promises)
-       
-      }
-      catch(err){
-        console.log(err)
-      }
+    await Promise.all(promises)
     
-   
-  res.render('index')
-  });
+    }
+    catch(err){
+        console.log(err)
+    }
+    
+
+res.render('index')
+});
+
+
+// const insertWeather = async(city) => {
+
+//     url = url+city+"&"+appId;
+    
+//     request(url, async (error, response, body) => {
+//         body = JSON.parse(body);
+//         if(error && response.statusCode != 200){
+//           throw error;
+//         }
+
+//         console.log(body);
+
+//         var minTemperature = parseInt(body.main.temp_min);
+//         var maxTemperature = parseInt(body.main.temp_max);
+//         var rain = body.main.humidity;
+//         var dateTime = new Date();
+//         var dateWeather = dateTime.toISOString().slice(0,10);
+
+
+//         let query= 'insert into weather(minTemperature,maxTemperature,city,rain,dateWeather) values($1,$2,$3,$4,$5)';
+//         let values = [minTemperature, maxTemperature, city, rain, dateWeather];
+
+//         result = await pool.query(query, values);
+
+//      });
+// }
+
+const insertWeatherDark = async(city) => {
+
+    urlAPI = 'https://api.darksky.net/forecast/468542072566d71440910f782d9f5130/' + coordenates[city];
+    
+    request(urlAPI, async (error, response, body) => {
+        body = JSON.parse(body);
+        if(error && response.statusCode != 200){
+          throw error;
+        }
+
+        console.log(body);
+
+        var minTemperature = parseInt(body.currently.temperature);
+        var maxTemperature = parseInt(body.currently.temperature);
+        var rain = parseInt(body.currently.humidity);
+        var dateTime = new Date();
+        var dateWeather = dateTime.toISOString().slice(0,10);
+
+
+        let query= 'insert into weather(minTemperature,maxTemperature,city,rain,dateWeather) values($1,$2,$3,$4,$5)';
+        let values = [minTemperature, maxTemperature, city, rain, dateWeather];
+
+        result = await pool.query(query, values);
+
+     });
+}
+
+
+
+
+const updateWeather = async ()=> {
+
+    response = await pool.query('select distinct city from patient', (error, result) => {
+        if (error) {
+            throw error;
+        }
+
+        cities = result.rows;
+
+        for(let i = 0; i < cities.length; i++){
+            console.log(cities[i].city);
+
+            try{            
+                  insertWeatherDark(cities[i].city);               
+            }
+            catch(err){
+                console.log(err);
+            }  
+        }
+    })
+}
+
 
 
 /* creates a new patient in the databse */
-router.post('/register', function(req, res) {
+router.post('/register', async (req, res) => {
     let name = req.body.name;
     let key = req.body.key;
     let city = req.body.city;
@@ -100,16 +190,28 @@ router.post('/register', function(req, res) {
     })
 });
 
-/* list all patients page*/
-router.get('/list', function(req, res) {
+/* manage patients page*/
+router.get('/manage', function(req, res) {
 
     pool.query('select * from patient', (error, result) => {
         if (error) {
             throw error;
         }
-        console.log(result.rows);
         let users = result.rows;
         res.render('patient/list_patients', {users});
+    })
+    
+  });
+
+/* returns patients */
+router.get('/list', function(req, res) {
+    console.log("fsfdf");
+
+    pool.query('select * from patient', (error, result) => {
+        if (error) {
+            throw error;
+        }
+        res.json({ success: true, users:result.rows  });
     })
     
   });
@@ -145,18 +247,44 @@ router.post('/:patient/addMood', function(req, res) {
 
     query = query.substring(0, query.length -1);
 
-    console.log(query);
-
     pool.query(query, (error, result) => {
         if (error) {
             throw error;
         }
-        console.log(result);
         res.render('index');
      })
      
-   });
+});
 
+router.get('/:patient/dashboard', async(req, res) => {
+    try{
+        let name_query = `SELECT name FROM patient WHERE patient.id=` + req.params.patient;
+     
+        let result1 = await pool.query(name_query);
+        let name = result1.rows[0].name;
+
+        let mood_query = "select mood.value, EXTRACT (YEAR FROM mood.moodDate) AS YEAR, EXTRACT (MONTH FROM mood.moodDate) AS MONTH, EXTRACT (DAY FROM mood.moodDate) AS DAY " +
+        "from mood inner join patient on  mood.patient = patient.id where mood.patient=" + req.params.patient;
+       
+        let result2 = await pool.query(mood_query);
+
+        let mood = result2.rows;
+  
+        for(let i =0; i <mood.length; i++){
+          mood[i].date = mood[i].day + "/" + mood[i].month + "/" + mood[i].year;
+        }
+    
+        mood = JSON.stringify(mood);
+  
+        res.render('dashboard/mood', {mood, name });
+
+        
+        }
+        catch(err){
+          console.log(err)
+        }
+});
+   
 
    function authorize(credentials,calendarId, callback) {
     const {client_secret, client_id, redirect_uris} = credentials.installed;

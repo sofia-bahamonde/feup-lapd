@@ -7,13 +7,9 @@ let appId  = 'appid=eb0ee711a1bef9907ac2aa0d6f223400';
 let units  = '&units=metric'; 
 var request = require('request');
 
-
-/* GET patients page. */
-router.get('/patients', function(req, res) {
-  console.log('pole');
-  res.render('patients');
+router.get("/",  function(req, res) {
+  res.render('dashboard');
 });
-
 
 
 /* GET patients page. */
@@ -24,7 +20,7 @@ router.get('/register', function(req, res) {
 
 router.get('/weather', function(req, res, next){
   let city = req.body.city;
-  url = url+'Porto'+"&"+appId;
+  url = 'https://api.darksky.net/forecast/468542072566d71440910f782d9f5130/38.744098,-9.158084';
   console.log(url);
  request(url, function (error, response, body) {
       body = JSON.parse(body);
@@ -32,6 +28,7 @@ router.get('/weather', function(req, res, next){
         throw error;
       }
     console.log(body);
+
    });
 });
 
