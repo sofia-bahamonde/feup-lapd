@@ -224,13 +224,22 @@ router.post('/:patient/addMood', function(req, res) {
         const events = res.data.items;
         if (events.length) {
           
-    
-          const query = `SELECT lastUpdate FROM Patient WHERE id=${user}`
+          let query = `SELECT lastUpdate FROM Patient WHERE id=${user}`
           let result = await pool.query(query)
+          let biggestDate = result.rows[0].lastupdate;
           for(let i=0; i< events.length;i++){
             if(Date.parse(events[i].start.dateTime)>result.rows[0].lastupdate)
-          await insertEvent(events[i],categories[calendarName])
+              await insertEvent(events[i],categories[calendarName])
+              console.log(events[i].start.dateTime)
+              if(biggestDate< (Date.parse(events[i].start.dateTime)/1000)){
+               // console.log(events[i].start.dateTime)
+                biggestDate =Date.parse(events[i].start.dateTime)/1000;
+              }
           }
+
+          query = `UPDATE Patient SET lastUpdate=${biggestDate} WHERE id=${user}`
+          result = await pool.query(query)
+          console.log(query)
           
         } else {
           console.log('No upcoming events found.');

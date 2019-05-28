@@ -76,8 +76,8 @@ CREATE TABLE Weather(
 
 CREATE TABLE Events(
     id SERIAL PRIMARY KEY,
-    initialDate INT NOT NULL,
-    finalDate INT NOT NULL,
+    initialDate BIGINT NOT NULL,
+    finalDate BIGINT NOT NULL,
     description VARCHAR(256),
     location VARCHAR(128),
     summary VARCHAR(256) NOT NULL,
