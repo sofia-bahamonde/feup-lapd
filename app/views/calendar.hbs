@@ -1,6 +1,39 @@
 
-<div class="container" height="50vh">
+ <script>
+
+  document.addEventListener('DOMContentLoaded', function() {
+    var calendarEl = document.getElementById('calendar');
+
+    var calEvents = document.getElementById('calEvents').innerHTML;
+
+    console.log("olaaaaaaa");
+    console.log(calEvents);
+  
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+
+
+      plugins: [ 'dayGrid', 'googleCalendar' ],         
+      googleCalendarApiKey: 'AIzaSyC766H9R6MfgpDm2wH-zULsf_EebI8Icrk',
+      eventSources: [
+
+          {
+            events: JSON.parse(calEvents),
+            //color: 'black',     // an option!
+            textColor: 'white' // an option!
+          }
+      ]
+    });
+
+    calendar.render();
+  });
+
+</script> 
+
+<div class="container">
+
   <div id='calendar'></div>
 
-  <iframe src="https://calendar.google.com/calendar/embed?height=600&amp;wkst=1&amp;bgcolor=%23ffffff&amp;ctz=Europe%2FLisbon&amp;src=ZGFuaWVsLnBtYWNoYWRvMjhAZ21haWwuY29t&amp;src=YWRkcmVzc2Jvb2sjY29udGFjdHNAZ3JvdXAudi5jYWxlbmRhci5nb29nbGUuY29t&amp;src=ajQ5bWlkNWozazhvb2dtMnVsZTgydm8wZzRAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ&amp;src=b2s3ZWI5OHR0bWhrM3YyMms5ZDNhdDZtN2tAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ&amp;src=cHQucG9ydHVndWVzZSNob2xpZGF5QGdyb3VwLnYuY2FsZW5kYXIuZ29vZ2xlLmNvbQ&amp;color=%23039BE5&amp;color=%237986CB&amp;color=%233F51B5&amp;color=%23F09300&amp;color=%237986CB" style="border-width:0" width="800" height="600" frameborder="0" scrolling="no"></iframe>
+ <div id="calEvents"  style="display: none;">{{calendarEvents}}</div> 
+
+
 </div>
