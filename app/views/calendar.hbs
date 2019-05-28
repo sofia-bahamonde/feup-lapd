@@ -1,35 +1,39 @@
 
-{{!-- <script>
+ <script>
 
   document.addEventListener('DOMContentLoaded', function() {
     var calendarEl = document.getElementById('calendar');
+
+    var calEvents = document.getElementById('calEvents').innerHTML;
+
+    console.log("olaaaaaaa");
+    console.log(calEvents);
+  
     var calendar = new FullCalendar.Calendar(calendarEl, {
+
 
       plugins: [ 'dayGrid', 'googleCalendar' ],         
       googleCalendarApiKey: 'AIzaSyC766H9R6MfgpDm2wH-zULsf_EebI8Icrk',
       eventSources: [
+
           {
-          /*googleCalendarId: 'dvr01gure849i5cure96n231es@group.calendar.google.com'*/
-          googleCalendarId: 'daniel.pmachado28@gmail.com'
+            events: JSON.parse(calEvents),
+            //color: 'black',     // an option!
+            textColor: 'white' // an option!
           }
       ]
     });
 
-
-    var events: [
-      { // this object will be "parsed" into an Event Object
-        title: 'The Title', // a property!
-        start: '2019-05-30', // a property!
-        end: '2019-05-30' // a property! ** see important note below about 'end' **
-      }
-    ]
-
-    //calendar.addEvent(events);
     calendar.render();
   });
-</script> --}}
 
-<div class="container" height="50vh">
+</script> 
+
+<div class="container">
+
   <div id='calendar'></div>
+
+ <div id="calEvents"  style="display: none">{{calendarEvents}}</div> 
+
 
 </div>

@@ -113,11 +113,16 @@ var myLineChart = new Chart(ctx, {
       mode: 'index',
       caretPadding: 10,
       callbacks: {
+        title: function(tooltipItem, chart){
+          console.log(mood);
+          return mood[tooltipItem[0].index].description;
+        },
         label: function(tooltipItem, chart) {
           var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
           return datasetLabel + ':'  + number_format(tooltipItem.yLabel);
         }
       }
+      
     }
   }
 });

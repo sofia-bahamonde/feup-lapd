@@ -235,9 +235,11 @@ router.post('/:patient/addMood', function(req, res) {
     let iMoodJSON = JSON.parse(req.body.json);
     let levels = [];
     let dates =[];
+    let descriptions =[];
 
     for(let i =0; i < iMoodJSON.length; i++ ){
         levels.push(iMoodJSON[i].Level);
+        descriptions.push(iMoodJSON[i].Comment);
 
         let dateArray = (iMoodJSON[i].Date).split(' ');
         let date = dateArray[4] + "-" + months[dateArray[2]] + "-" + dateArray[0];
@@ -246,14 +248,13 @@ router.post('/:patient/addMood', function(req, res) {
     }
 
     let patient = req.params.patient;
-    let query= 'insert into mood(value,moodDate,patient) values';
+    let query= 'insert into mood(value,moodDate,patient,description) values';
 
     for(let i=0; i < iMoodJSON.length; i++){
-        query += "(" + levels[i] + ", to_date(\'" + dates[i] + "\', \'YYYY-MM-DD\')" + ", " + patient + '),';
+        query += "(" + levels[i] + ", to_date(\'" + dates[i] + "\', \'YYYY-MM-DD\')" + ", " + patient + ", \'" + descriptions[i].toString() +"\'),";
     };
 
     query = query.substring(0, query.length -1);
-
     pool.query(query, (error, result) => {
         if (error) {
             throw error;
@@ -263,6 +264,37 @@ router.post('/:patient/addMood', function(req, res) {
      
 });
 
+
+router.get('/:patient/calendar', async(req, res) => {
+
+
+  
+  try{
+
+
+    var calendarEvents = [  // change to array of events
+      {
+      title: 'Event1',
+      start: ' 2019-05-30T09:30:00',
+      color:'black'
+    },
+    {
+      title: 'Event2',
+      start: '2019-05-31'
+    }];
+
+
+    calendarEvents = JSON.stringify(calendarEvents);
+
+    res.render('calendar', {calendarEvents});
+
+  }
+  catch(err){
+    console.log(err)
+  }
+
+});
+
 router.get('/:patient/dashboard', async(req, res) => {
     try{
         let name_query = `SELECT name FROM patient WHERE patient.id=` + req.params.patient;
@@ -270,7 +302,7 @@ router.get('/:patient/dashboard', async(req, res) => {
         let result1 = await pool.query(name_query);
         let name = result1.rows[0].name;
 
-        let mood_query = "select mood.value, EXTRACT (YEAR FROM mood.moodDate) AS YEAR, EXTRACT (MONTH FROM mood.moodDate) AS MONTH, EXTRACT (DAY FROM mood.moodDate) AS DAY " +
+        let mood_query = "select mood.value, EXTRACT (YEAR FROM mood.moodDate) AS YEAR, EXTRACT (MONTH FROM mood.moodDate) AS MONTH, EXTRACT (DAY FROM mood.moodDate) AS DAY, mood.description " +
         "from mood inner join patient on  mood.patient = patient.id where mood.patient=" + req.params.patient;
        
         let result2 = await pool.query(mood_query);

@@ -37,6 +37,7 @@ CREATE TABLE Mood(
     value INT,
     moodDate date NOT NULL,
     patient INT,
+    description VARCHAR(512),
 
     FOREIGN KEY(patient)
         REFERENCES Patient(id)
