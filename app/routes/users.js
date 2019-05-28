@@ -3,6 +3,11 @@ var router = express.Router();
 const fs = require('fs');
 const readline = require('readline');
 const {google} = require('googleapis');
+var pool = require('../database.js');
+var request = require('request');
+var user =0;
+
+
 
 
 // If modifying these scopes, delete token.json.
@@ -10,12 +15,36 @@ const SCOPES = ['https://www.googleapis.com/auth/calendar.readonly'];
 // The file token.json stores the user's access and refresh tokens, and is
 // created automatically when the authorization flow completes for the first
 // time.
-const TOKEN_PATH = 'token.json';
+const TOKEN_PATH = `token.json${user}`;
+const cal = google.calendar({
+  version: 'v3',
+  auth: 'AIzaSyC07qKuA-_SKLfl36pEiA9dKjpnjHiSfSk'
+});
 
 
 /* GET users listing. */
 router.get('/', function(req, res) {
   res.send('respond with a resource');
+});
+
+router.get('/patients/:patientId', function(req, res) {
+  const clientId = req.params.patientId
+  let query =`SELECT apiKey FROM Patient WHERE id=${clientId}`
+  console.log(query)
+  pool.query(query, (error, result) => {
+    if (error) {
+      console.log(error)
+        throw error;
+    }
+
+
+    
+
+    console.log(result)
+    authorize(JSON.parse(result.rows[0].apikey), listEvents);
+    listEvents(listEvents)
+})
+res.render('patients');
 });
 
 // Load client secrets from a local file.
@@ -129,11 +158,7 @@ function listEvents(auth) {
     });
   }
 );
-
-
-
-}
-// setInterval(function(){ fs.readFile('./credentials.json', (err, content) => {
+}// setInterval(function(){ fs.readFile('./credentials.json', (err, content) => {
 //   console.log(JSON.parse(content))
 //   if (err) return console.log('Error loading client secret file:', err);
 //   // Authorize a client with credentials, then call the Google Calendar API.
