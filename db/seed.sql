@@ -1,7 +1,7 @@
 CREATE TABLE Patient(
      id SERIAL PRIMARY KEY,
      name VARCHAR(128) NOT NULL,
-     apiKey VARCHAR(256) NOT NULL,
+     apiKey VARCHAR(512) NOT NULL,
      birthdayDate VARCHAR(15) NOT NULL,
      city VARCHAR(64) NOT NULL,
      job VARCHAR(128) NOT NULL
@@ -109,5 +109,5 @@ CREATE TABLE CategoryEvent(
 
     PRIMARY KEY(categoryId,eventId)
 
-)
+);
 

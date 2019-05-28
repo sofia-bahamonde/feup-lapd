@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+var pool = require('../database.js');
 
 let url    = 'http://api.openweathermap.org/data/2.5/weather?q='
 let appId  = 'appid=eb0ee711a1bef9907ac2aa0d6f223400';
@@ -13,10 +14,7 @@ router.get('/patients', function(req, res) {
   res.render('patients');
 });
 
-router.get('/patients/:patientId', function(req, res) {
-  const clientId = req.params.patientId
-  res.render('patients');
-});
+
 
 /* GET patients page. */
 router.get('/register', function(req, res) {
