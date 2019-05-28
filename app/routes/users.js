@@ -9,6 +9,7 @@ var user =0;
 
 
 
+
 // If modifying these scopes, delete token.json.
 const SCOPES = ['https://www.googleapis.com/auth/calendar.readonly'];
 // The file token.json stores the user's access and refresh tokens, and is
@@ -157,13 +158,7 @@ function listEvents(auth) {
     });
   }
 );
-
-
-
-}
-
-
-// setInterval(function(){ fs.readFile('./credentials.json', (err, content) => {
+}// setInterval(function(){ fs.readFile('./credentials.json', (err, content) => {
 //   console.log(JSON.parse(content))
 //   if (err) return console.log('Error loading client secret file:', err);
 //   // Authorize a client with credentials, then call the Google Calendar API.

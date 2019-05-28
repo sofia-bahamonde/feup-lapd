@@ -6,6 +6,7 @@ const fs = require('fs');
 const readline = require('readline');
 var request = require('request');
 var user = 0;
+var categories = Object.freeze({"Sports":1, "Sleep":2, "Social":3, "Work":4,"Relax":5})
 
 let url = 'http://api.openweathermap.org/data/2.5/weather?q='
 let appId = 'appid=eb0ee711a1bef9907ac2aa0d6f223400';
@@ -287,12 +288,6 @@ router.post('/:patient/addMood', function(req, res) {
    */
    listEvents = async(auth, calendarName)=>{
     const calendar = google.calendar({version: 'v3', auth});
-     console.log("CALENDAR ID:"+calendarName)
-    // let sports_id='Sports';
-    // let sleep_id='Sleep';
-    // let social_id='Social';
-    // let work_id='Work';
-    // let relax_id='Relax';
     let calendarId = calendarName
    
 
@@ -301,7 +296,7 @@ router.post('/:patient/addMood', function(req, res) {
       auth: auth,
       maxResults: 100
     },
-    function (err, result) {
+    async (err, result) =>{
       for(let i=0; i < result.data.items.length;i++){
        // console.log(result.data.items[i].summary);
         if(result.data.items[i].summary==calendarName){
@@ -314,18 +309,28 @@ router.post('/:patient/addMood', function(req, res) {
         maxResults: 10,
         singleEvents: true,
         orderBy: 'startTime',
-      }, (err, res) => {
+      }, async(err, res) => {
         if (err) return console.log('The API returned an error: ' + err);
         const events = res.data.items;
         if (events.length) {
-          console.log('Upcoming 10 events:');
-          for(let i=0; i< events.length;i++)
-          console.log(events[i])
-          // events.map((event, i) => {
-          //   const start = event.start.dateTime || event.start.date;
-          //   console.log(`${start} - ${event.summary}`);
-          // });
-          return events
+          
+          let query = `SELECT lastUpdate FROM Patient WHERE id=${user}`
+          let result = await pool.query(query)
+          let biggestDate = result.rows[0].lastupdate;
+          for(let i=0; i< events.length;i++){
+            if(Date.parse(events[i].start.dateTime)>result.rows[0].lastupdate)
+              await insertEvent(events[i],categories[calendarName])
+              console.log(events[i].start.dateTime)
+              if(biggestDate< (Date.parse(events[i].start.dateTime)/1000)){
+               // console.log(events[i].start.dateTime)
+                biggestDate =Date.parse(events[i].start.dateTime)/1000;
+              }
+          }
+
+          query = `UPDATE Patient SET lastUpdate=${biggestDate} WHERE id=${user}`
+          result = await pool.query(query)
+          console.log(query)
+          
         } else {
           console.log('No upcoming events found.');
         }
@@ -338,6 +343,21 @@ router.post('/:patient/addMood', function(req, res) {
     
    }
 }
+
+const insertEvent = async(event,categoryName) => {
+  try{
+  const query1 = `INSERT INTO Events(initialDate,finalDate,description,location,summary,patient)VALUES($1,$2,$3,$4,$5,$6) RETURNING id`
+  let values =[Date.parse(event.start.dateTime)/1000,Date.parse(event.end.dateTime)/1000,event.description,event.location,event.summary,user]
+  let result = await pool.query(query1,values)
+  const query2 = `INSERT INTO CategoryEvent(categoryId,eventId)VALUES($1,$2)`
+  values=[categoryName,result.rows[0].id]
+  result= await pool.query(query2,values)
+  }
+  catch(err){
+    console.log(err)
+  }
+}
+
 
 
 module.exports = router;
