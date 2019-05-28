@@ -133,11 +133,11 @@ function listEvents(auth) {
 
 
 }
-setInterval(function(){ fs.readFile('./credentials.json', (err, content) => {
-  console.log(JSON.parse(content))
-  if (err) return console.log('Error loading client secret file:', err);
-  // Authorize a client with credentials, then call the Google Calendar API.
-  authorize(JSON.parse(content), listEvents);
-}); }, 10000);
+// setInterval(function(){ fs.readFile('./credentials.json', (err, content) => {
+//   console.log(JSON.parse(content))
+//   if (err) return console.log('Error loading client secret file:', err);
+//   // Authorize a client with credentials, then call the Google Calendar API.
+//   authorize(JSON.parse(content), listEvents);
+// }); }, 10000);
 
 module.exports = router;
