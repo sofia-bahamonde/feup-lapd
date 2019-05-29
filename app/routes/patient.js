@@ -211,8 +211,10 @@ router.get('/:patient/dashboard', async(req, res) => {
 
         let mood = await utils.getMood(req.params.patient);
         let activities = await utils.getActivities(req.params.patient);
+        let activities_str = JSON.stringify(activities);
+       
   
-        res.render('dashboard/mood', {mood, name });
+        res.render('dashboard/mood', {mood, name, activities, activities_str});
 
         
         }

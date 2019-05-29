@@ -4,19 +4,11 @@ getMood = async (patient) => {
 
     let query = "select mood.value, EXTRACT (YEAR FROM mood.moodDate) AS YEAR, EXTRACT (MONTH FROM mood.moodDate) AS MONTH, EXTRACT (DAY FROM mood.moodDate) AS DAY, mood.description " +
     "from mood inner join patient on  mood.patient = patient.id where mood.patient=" + patient;
-<<<<<<< HEAD
    
     let result = await pool.query(query);
   
     let mood = result.rows;
   
-=======
-    
-    let result2 = await pool.query(mood_query);
-
-    let mood = result2.rows;
-
->>>>>>> 8fec142f979bff2ad80eb9834b63a8b530e028f9
     for(let i =0; i <mood.length; i++){
       mood[i].date = mood[i].day + "/" + mood[i].month + "/" + mood[i].year;
     }
@@ -41,21 +33,33 @@ async function getWeather(patient){
 
 
 getActivities = async (patient) => {
-    const query = `SELECT Category.name, SUM((Events.finalDate -Events.initialDate)) AS duration FROM Events JOIN CategoryEvent ON CategoryEvent.eventId = Events.id JOIN Category ON CategoryEvent.categoryId = Category.id WHERE Events.patient=${patient} GROUP BY Category.name;`
+    let query = `SELECT Category.name, SUM((Events.finalDate -Events.initialDate)) AS duration FROM Events JOIN CategoryEvent ON CategoryEvent.eventId = Events.id JOIN Category ON CategoryEvent.categoryId = Category.id WHERE Events.patient=${patient} GROUP BY Category.name;`
     let response = await pool.query(query);
 
-    console.log(response.rows);
+    let activities = response.rows;
+    let total =0;
 
-    return response.rows;
+    color = ['text-primary', 'text-success', 'text-info', 'text-secondary', 'text-warning' , 'text-danger' ];
+
+    for(let i =0; i < activities.length; i++){
+      activities[i].color = color[i];  
+      total += parseInt(activities[i].duration);  
+    }
+
+    for(let i =0; i < activities.length; i++){
+      console.log(total);
+      activities[i].duration =  Math.round(activities[i].duration * 100 / total);    
+    }
+
+    console.log(activities);
+
+    return activities;
 }
 
 
 
 module.exports ={
     getMood: getMood,
-<<<<<<< HEAD
-    getActivities: getActivities
-=======
+    getActivities: getActivities,
     getWeather: getWeather
->>>>>>> 8fec142f979bff2ad80eb9834b63a8b530e028f9
 }
