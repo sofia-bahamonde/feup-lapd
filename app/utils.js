@@ -39,7 +39,7 @@ getActivities = async (patient) => {
     let activities = response.rows;
     let total =0;
 
-    color = ['text-primary', 'text-success', 'text-info', 'text-secondary', 'text-warning' , 'text-danger' ];
+    color = ['#4e73df', '#1cc88a', '#5a5c69',  '#36b9cc' ,'#e74a3b', '#858796' ];
 
     for(let i =0; i < activities.length; i++){
       activities[i].color = color[i];  
