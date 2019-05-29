@@ -149,25 +149,6 @@ router.get('/list', async(req, res) =>{
     
   });
 
-router.get('/:patient/calendar', async(req, res) => {
- 
-  try{
-
-    let calendarEvents  = await getEventsPatient(req.params.patient,1558310400, 1559347200);
-
-    calendarEvents = JSON.stringify(calendarEvents);
-
-    res.render('calendar', {calendarEvents});
-
-  }
-  catch(err){
-    console.log(err)
-  }
-
-});
-
-
-
 router.get('/:patient/dashboard', async(req, res) => {
     try{
         let patient = req.params.patient;
@@ -190,23 +171,6 @@ router.get('/:patient/dashboard', async(req, res) => {
         }
 });
    
-
-  
-
-const getEventsPatient = async(patientId,date1, date2) =>{
-  const query = `SELECT Events.summary as title, Events.initialDate as start, Events.finalDate as end, Category.color FROM
-  Events JOIN CategoryEvent ON Events.id = categoryEvent.eventId JOIN Category ON Category.id = categoryEvent.categoryId Where Events.patient=${patientId} AND
-  Events.initialDate > ${date1} AND Events.finalDate < ${date2};`
-  let result = await pool.query(query)
-  console.log(result.rows)
-  
-  for(let i= 0; i<result.rows.length; i++){
-    result.rows[i].start = new Date(result.rows[i].start*1000).toJSON();
-    result.rows[i].end = new Date(result.rows[i].end*1000).toJSON();
-  }
-  return result.rows;
-  
-}
 
 
 module.exports = router;

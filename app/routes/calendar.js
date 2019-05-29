@@ -10,6 +10,7 @@ const SCOPES = ['https://www.googleapis.com/auth/calendar.readonly'];
 var categories = Object.freeze({"Sports":1, "Sleep":2, "Social":3, "Work":4,"Relax":5});
 
 
+
 router.get('/update/:patientId', async(req, res) =>{
     const clientId = req.params.patientId
     let query =`SELECT apiKey FROM Patient WHERE id=${clientId}`
@@ -31,10 +32,47 @@ router.get('/update/:patientId', async(req, res) =>{
     catch(err){
         console.log(err)
     }
-    
 
-res.render('index')
+    res.render('index');
 });
+
+
+router.get('/:patient/show', async(req, res) => {
+
+  try{
+
+    let calendarEvents  = await getEventsPatient(req.params.patient,1558310400, 1559347200);
+
+    calendarEvents = JSON.stringify(calendarEvents);
+
+    res.render('calendar', {calendarEvents});
+
+  }
+  catch(err){
+    console.log(err)
+  }
+
+});
+
+
+const getEventsPatient = async(patientId,date1, date2) =>{
+  const query = `SELECT Events.summary as title, Events.initialDate as start, Events.finalDate as end, Category.color FROM
+  Events JOIN CategoryEvent ON Events.id = categoryEvent.eventId JOIN Category ON Category.id = categoryEvent.categoryId Where Events.patient=${patientId} AND
+  Events.initialDate > ${date1} AND Events.finalDate < ${date2};`
+  let result = await pool.query(query)
+  console.log(result.rows)
+  
+  for(let i= 0; i<result.rows.length; i++){
+    result.rows[i].start = new Date(result.rows[i].start*1000).toJSON();
+    result.rows[i].end = new Date(result.rows[i].end*1000).toJSON();
+  }
+  return result.rows;
+  
+}
+
+
+
+  
 
 function authorize(credentials,calendarId, callback) {
     const {client_secret, client_id, redirect_uris} = credentials.installed;

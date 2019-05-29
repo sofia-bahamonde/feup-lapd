@@ -47,11 +47,8 @@ getActivities = async (patient) => {
     }
 
     for(let i =0; i < activities.length; i++){
-      console.log(total);
       activities[i].duration =  Math.round(activities[i].duration * 100 / total);    
     }
-
-    console.log(activities);
 
     return activities;
 }
