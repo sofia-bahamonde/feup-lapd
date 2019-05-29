@@ -12006,3 +12006,26 @@ input[type=date]::-webkit-inner-spin-button {
   -webkit-appearance: none;
   display: none;
 }
+
+.inputfile {
+	width: 0.1px;
+	height: 0.1px;
+	opacity: 0;
+	overflow: hidden;
+	position: absolute;
+	z-index: -1;
+}
+
+.inputfile + label {
+  padding: 0.3em;
+  font-size: 1em;
+  font-weight: 700;
+  color: white;
+  display: inline-block;
+}
+
+
+
+.inputfile + label {
+	cursor: pointer; /* "hand" cursor */
+}

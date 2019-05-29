@@ -18,19 +18,14 @@ let months ={
 
 }
 
-router.get('/:patient/form', function(req, res) {
-    let patient = req.params.patient;
-    res.render('patient/add_mood', {patient});
-     
-   });
 
-
-router.post('/:patient/submit', function(req, res) {
-   
-    let iMoodJSON = JSON.parse(req.body.json);
+router.post('/:patient/update', function(req, res) {
+    let iMoodJSON = req.body;
     let levels = [];
     let dates =[];
     let descriptions =[];
+
+try{
 
     for(let i =0; i < iMoodJSON.length; i++ ){
         levels.push(iMoodJSON[i].Level);
@@ -42,8 +37,11 @@ router.post('/:patient/submit', function(req, res) {
 
     }
 
+
     let patient = req.params.patient;
     let query= 'insert into mood(value,moodDate,patient,description) values';
+
+    
 
     for(let i=0; i < iMoodJSON.length; i++){
         query += "(" + levels[i] + ", to_date(\'" + dates[i] + "\', \'YYYY-MM-DD\')" + ", " + patient + ", \'" + descriptions[i].toString() +"\'),";
@@ -56,6 +54,11 @@ router.post('/:patient/submit', function(req, res) {
         }
         res.render('index');
      })
+
+    }
+    catch(err){
+        console.log(err)
+      }
      
 });
 
