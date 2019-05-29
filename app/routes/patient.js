@@ -33,6 +33,7 @@ router.get('/register/form', function(req, res) {
     res.render('patient/register_patient');
   });
 
+<<<<<<< HEAD
 router.get('/update/:patientId', async(req, res) =>{
     const clientId = req.params.patientId
     let query =`SELECT apiKey FROM Patient WHERE id=${clientId}`
@@ -59,6 +60,24 @@ router.get('/update/:patientId', async(req, res) =>{
 res.render('index')
 });
 
+=======
+router.get('/activities', async(req, res) =>{
+  if(!req.body)
+    res.status(400)
+  try{
+  const query = `SELECT Category.name, SUM((Events.finalDate -Events.initialDate)) AS duration FROM Events JOIN CategoryEvent ON CategoryEvent.eventId = Events.id JOIN Category ON CategoryEvent.categoryId = Category.id WHERE Events.patient=${req.body.patientId} AND Events.initialDate > ${req.body.date1} AND Events.finalDate < ${req.body.date2}GROUP BY Category.name;`
+  let response = await pool.query(query)
+  res.status(200)
+  res.send(response.rows)
+  }
+  catch(err){
+    res.status(400)
+    res.send(err.msg)
+  }
+});
+
+
+>>>>>>> 8fec142f979bff2ad80eb9834b63a8b530e028f9
 router.get('/events',async(req,res) =>{
   if(!req.body)
   res.status(400)
@@ -184,8 +203,6 @@ router.get('/manage', function(req, res) {
 router.get('/list', async(req, res) =>{
     console.log("fsfdf");
 
-    await getEventsPatient(1,1558310400,1559347200)
-
     pool.query('select * from patient', (error, result) => {
         if (error) {
             throw error;
@@ -199,7 +216,7 @@ router.get('/:patient/calendar', async(req, res) => {
  
   try{
 
-   let calendarEvents  = await getEventsPatient(req.params.patient,1558310400, 1559347200);
+    let calendarEvents  = await getEventsPatient(req.params.patient,1558310400, 1559347200);
 
     calendarEvents = JSON.stringify(calendarEvents);
 
@@ -234,121 +251,7 @@ router.get('/:patient/dashboard', async(req, res) => {
 });
    
 
-   function authorize(credentials,calendarId, callback) {
-    const {client_secret, client_id, redirect_uris} = credentials.installed;
-    const oAuth2Client = new google.auth.OAuth2(
-        client_id, client_secret, redirect_uris[0]);
   
-    fs.readFile("token"+user+".json", (err, token) => {
-      if (err) return getAccessToken(oAuth2Client, callback);
-      oAuth2Client.setCredentials(JSON.parse(token));
-      callback(oAuth2Client,calendarId);
-    });
-  }
-  
-  /**
-   * Get and store new token after prompting for user authorization, and then
-   * execute the given callback with the authorized OAuth2 client.
-   * @param {google.auth.OAuth2} oAuth2Client The OAuth2 client to get token for.
-   * @param {getEventsCallback} callback The callback for the authorized client.
-   */
-  function getAccessToken(oAuth2Client, callback) {
-    const authUrl = oAuth2Client.generateAuthUrl({
-      access_type: 'offline',
-      scope: SCOPES,
-    });
-    console.log('Authorize this app by visiting this url:', authUrl);
-    const rl = readline.createInterface({
-      input: process.stdin,
-      output: process.stdout,
-    });
-    rl.question('Enter the code from that page here: ', (code) => {
-      rl.close();
-      oAuth2Client.getToken(code, (err, token) => {
-        if (err) return console.error('Error retrieving access token', err);
-        oAuth2Client.setCredentials(token);
-        // Store the token to disk for later program executions
-        fs.writeFile("token"+user+".json", JSON.stringify(token), (err) => {
-          if (err) return console.error(err);
-        });
-        callback(oAuth2Client);
-      });
-    });
-  }
-  
-  /**
-   * Lists the next 10 events on the user's primary calendar.
-   * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
-   */
-   listEvents = async(auth, calendarName)=>{
-    const calendar = google.calendar({version: 'v3', auth});
-    let calendarId = calendarName
-   
-
-   try{
-    calendar.calendarList.list({
-      auth: auth,
-      maxResults: 100
-    },
-    async (err, result) =>{
-      for(let i=0; i < result.data.items.length;i++){
-        if(result.data.items[i].summary==calendarName){
-          calendarId=result.data.items[i].id;
-        }
-      }
-      calendar.events.list({
-        calendarId: calendarId,
-        timeMin: (new Date()).toISOString(),
-        maxResults: 10,
-        singleEvents: true,
-        orderBy: 'startTime',
-      }, async(err, res) => {
-        if (err) return console.log('The API returned an error: ' + err);
-        const events = res.data.items;
-        if (events.length) {
-          
-          let query = `SELECT lastUpdate FROM Patient WHERE id=${user}`
-          let result = await pool.query(query)
-          let biggestDate = result.rows[0].lastupdate;
-          for(let i=0; i< events.length;i++){
-            if(Date.parse(events[i].start.dateTime)>result.rows[0].lastupdate)
-              await insertEvent(events[i],categories[calendarName])
-              console.log(events[i].start.dateTime)
-              if(biggestDate< (Date.parse(events[i].start.dateTime)/1000)){
-               // console.log(events[i].start.dateTime)
-                biggestDate =Date.parse(events[i].start.dateTime)/1000;
-              }
-          }
-
-          query = `UPDATE Patient SET lastUpdate=${biggestDate} WHERE id=${user}`
-          result = await pool.query(query)
-          
-        } else {
-          console.log('No upcoming events found.');
-        }
-      });
-    }
-  );
-   }
-   catch(err){
-     console.log(err)
-    
-   }
-}
-
-const insertEvent = async(event,categoryName) => {
-  try{
-  const query1 = `INSERT INTO Events(initialDate,finalDate,description,location,summary,patient)VALUES($1,$2,$3,$4,$5,$6) RETURNING id`
-  let values =[Date.parse(event.start.dateTime)/1000,Date.parse(event.end.dateTime)/1000,event.description,event.location,event.summary,user]
-  let result = await pool.query(query1,values)
-  const query2 = `INSERT INTO CategoryEvent(categoryId,eventId)VALUES($1,$2)`
-  values=[categoryName,result.rows[0].id]
-  result= await pool.query(query2,values)
-  }
-  catch(err){
-    console.log(err)
-  }
-}
 
 const getEventsPatient = async(patientId,date1, date2) =>{
   const query = `SELECT Events.summary as title, Events.initialDate as start, Events.finalDate as end, Category.color FROM
