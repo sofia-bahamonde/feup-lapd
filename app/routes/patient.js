@@ -33,34 +33,6 @@ router.get('/register/form', function(req, res) {
     res.render('patient/register_patient');
   });
 
-<<<<<<< HEAD
-router.get('/update/:patientId', async(req, res) =>{
-    const clientId = req.params.patientId
-    let query =`SELECT apiKey FROM Patient WHERE id=${clientId}`
-    let promises = []
-      user= clientId
-      try{
-        result = await pool.query(query)
-    let credentials =JSON.parse(result.rows[0].apikey)
-    // console.log(result.rows[0].apikey)
-    promises.push(authorize(credentials,'Sports', listEvents))
-    promises.push(authorize(credentials,'Sleep', listEvents))
-    promises.push(authorize(credentials,'Social', listEvents))
-    promises.push(authorize(credentials,'Work', listEvents))
-    promises.push(authorize(credentials,'Relax', listEvents))
-
-    await Promise.all(promises)
-    
-    }
-    catch(err){
-        console.log(err)
-    }
-    
-
-res.render('index')
-});
-
-=======
 router.get('/activities', async(req, res) =>{
   if(!req.body)
     res.status(400)
@@ -77,7 +49,6 @@ router.get('/activities', async(req, res) =>{
 });
 
 
->>>>>>> 8fec142f979bff2ad80eb9834b63a8b530e028f9
 router.get('/events',async(req,res) =>{
   if(!req.body)
   res.status(400)
