@@ -48,9 +48,9 @@ router.get('/events',async(req,res) =>{
 //      });
 // }
 
-const insertWeatherDark = async(city) => {
+const insertWeatherDark = async(city, timestamp) => {
 
-    urlAPI = 'https://api.darksky.net/forecast/468542072566d71440910f782d9f5130/' + coordenates[city];
+    urlAPI = 'https://api.darksky.net/forecast/468542072566d71440910f782d9f5130/' + coordenates[city] + ',' + timestamp;
     
     request(urlAPI, async (error, response, body) => {
         body = JSON.parse(body);
@@ -62,8 +62,9 @@ const insertWeatherDark = async(city) => {
 
         var minTemperature = parseInt(body.currently.temperature);
         var maxTemperature = parseInt(body.currently.temperature);
-        var rain = parseInt(body.currently.humidity);
-        var dateTime = new Date();
+        var rain = parseFloat(body.currently.humidity)*100;        //check percentage
+        
+        var dateTime = new Date(timestamp*1000);
         var dateWeather = dateTime.toISOString().slice(0,10);
 
 
@@ -74,6 +75,16 @@ const insertWeatherDark = async(city) => {
 
      });
 }
+
+const insertWeekWeather = async(city,timestamp) => {
+
+  for(let i = 0; i < 7; i++){
+
+    insertWeatherDark(city,timestamp);
+    timestamp -= 86400;
+  }
+}
+
 
 
 
@@ -113,7 +124,11 @@ router.post('/register', async (req, res) => {
     let text= 'insert into patient(name,apikey,birthdayDate,city,job) values($1,$2,$3,$4,$5)';
     let values = [name, key, birthday, city, job];
 
+    let timestamp = Math.floor(Date.now() / 1000);
+
+    await insertWeekWeather(city, timestamp);
     
+
     pool.query(text, values, (error, result) => {
         if (error) {
             throw error;
@@ -122,6 +137,10 @@ router.post('/register', async (req, res) => {
         res.render('index');
     })
 });
+
+
+
+
 
 /* manage patients page*/
 router.get('/manage', function(req, res) {
@@ -178,9 +197,13 @@ router.get('/:patient/dashboard', async(req, res) => {
         let mood = await utils.getMood(req.params.patient);
         let activities = await utils.getActivities(req.params.patient);
         let activities_str = JSON.stringify(activities);
+
+        let weather = await utils.getWeather(req.params.patient);
+
+        console.log(weather);
        
   
-        res.render('cenas', {mood, name, activities, activities_str});
+        res.render('cenas', {mood, name, activities, activities_str, weather});
 
         
         }

@@ -19,9 +19,9 @@ getMood = async (patient) => {
 }
 
 
-async function getWeather(patient){
+getWeather = async (patient) => {
 
-    let weather_query = "select weather.rain, weather.dateweather from weather, patient where patient.id=1 and weather.city = patient.city order by dateweather desc limit 3;";
+    let weather_query = `select weather.rain, weather.dateweather from weather, patient where patient.id=${patient} and weather.city = patient.city order by dateweather desc limit 7`;
 
     let result2 = await pool.query(weather_query);
 
