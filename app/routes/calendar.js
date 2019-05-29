@@ -33,7 +33,7 @@ router.get('/update/:patientId', async(req, res) =>{
         console.log(err)
     }
 
-    res.render('index');
+   // res.render('index');
 });
 
 
