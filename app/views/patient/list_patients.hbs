@@ -23,7 +23,7 @@
           <tbody>
             {{#each users}}
             <tr>
-              <td>{{this.name}}</td>
+              <td> <a href="/patient/{{this.id}}/dashboard">{{this.name}}</a></td>
               <td>{{this.job}}</td>
               <td>{{this.city}}</td>
               <td>{{this.birthdaydate}}</td>
