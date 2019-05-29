@@ -74,7 +74,8 @@ const updateWeather = async ()=> {
                   insertWeatherDark(cities[i].city);               
             }
             catch(err){
-                console.log(err);
+                
+              e.log(err);
             }  
         }
     })

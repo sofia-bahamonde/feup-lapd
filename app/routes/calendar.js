@@ -20,14 +20,14 @@ router.get('/update/:patientId', async(req, res) =>{
         result = await pool.query(query)
     let credentials =JSON.parse(result.rows[0].apikey)
     // console.log(result.rows[0].apikey)
-    promises.push(authorize(credentials,'Sports', listEvents))
-    promises.push(authorize(credentials,'Sleep', listEvents))
-    promises.push(authorize(credentials,'Social', listEvents))
-    promises.push(authorize(credentials,'Work', listEvents))
-    promises.push(authorize(credentials,'Relax', listEvents))
+    promises.push(authorize(credentials,'Sports',false, listEvents))
+    promises.push(authorize(credentials,'Sleep',false, listEvents))
+    promises.push(authorize(credentials,'Social',false, listEvents))
+    promises.push(authorize(credentials,'Work',false, listEvents))
+    promises.push(authorize(credentials,'Relax',true, listEvents))
 
     await Promise.all(promises)
-    
+ 
     }
     catch(err){
         console.log(err)
@@ -41,7 +41,7 @@ router.get('/:patient/show', async(req, res) => {
 
   try{
 
-    let calendarEvents  = await getEventsPatient(req.params.patient,1558310400, 1559347200);
+    let calendarEvents  = await getEventsPatient(req.params.patient,1558310400, 1577836800);
 
     calendarEvents = JSON.stringify(calendarEvents);
 
@@ -60,7 +60,7 @@ const getEventsPatient = async(patientId,date1, date2) =>{
   Events JOIN CategoryEvent ON Events.id = categoryEvent.eventId JOIN Category ON Category.id = categoryEvent.categoryId Where Events.patient=${patientId} AND
   Events.initialDate > ${date1} AND Events.finalDate < ${date2};`
   let result = await pool.query(query)
-  console.log(result.rows)
+ 
   
   for(let i= 0; i<result.rows.length; i++){
     result.rows[i].start = new Date(result.rows[i].start*1000).toJSON();
@@ -74,7 +74,7 @@ const getEventsPatient = async(patientId,date1, date2) =>{
 
   
 
-function authorize(credentials,calendarId, callback) {
+function authorize(credentials,calendarId,lastCall, callback) {
     const {client_secret, client_id, redirect_uris} = credentials.installed;
     const oAuth2Client = new google.auth.OAuth2(
         client_id, client_secret, redirect_uris[0]);
@@ -82,7 +82,7 @@ function authorize(credentials,calendarId, callback) {
     fs.readFile("token"+user+".json", (err, token) => {
       if (err) return getAccessToken(oAuth2Client, callback);
       oAuth2Client.setCredentials(JSON.parse(token));
-      callback(oAuth2Client,calendarId);
+      callback(oAuth2Client,calendarId,lastCall);
     });
   }
   
@@ -120,7 +120,7 @@ function authorize(credentials,calendarId, callback) {
    * Lists the next 10 events on the user's primary calendar.
    * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
    */
-   listEvents = async(auth, calendarName)=>{
+   listEvents = async(auth, calendarName,lastCall)=>{
     const calendar = google.calendar({version: 'v3', auth});
     let calendarId = calendarName
    
@@ -151,18 +151,21 @@ function authorize(credentials,calendarId, callback) {
           let result = await pool.query(query)
           let biggestDate = result.rows[0].lastupdate;
           for(let i=0; i< events.length;i++){
-            if(Date.parse(events[i].start.dateTime)>result.rows[0].lastupdate)
+           // console.log("Calendar:"+calendarId+ " Date:"+ Date.parse(events[i].start.dateTime)/1000 +" LastUpdate:"+result.rows[0].lastupdate)
+            if(Date.parse(events[i].start.dateTime)/1000 >result.rows[0].lastupdate){
               await insertEvent(events[i],categories[calendarName])
-              console.log(events[i].start.dateTime)
               if(biggestDate< (Date.parse(events[i].start.dateTime)/1000)){
-               // console.log(events[i].start.dateTime)
                 biggestDate =Date.parse(events[i].start.dateTime)/1000;
               }
+            }
+              
           }
-
-          query = `UPDATE Patient SET lastUpdate=${biggestDate} WHERE id=${user}`
-          result = await pool.query(query)
-          
+          if(lastCall){
+            query = `UPDATE Patient SET lastUpdate=${biggestDate} WHERE id=${user}`
+            await pool.query(query)
+               
+          }
+      
         } else {
           console.log('No upcoming events found.');
         }
