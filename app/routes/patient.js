@@ -21,36 +21,10 @@ router.get('/events',async(req,res) =>{
 });
 
 
-// const insertWeather = async(city) => {
 
-//     url = url+city+"&"+appId;
-    
-//     request(url, async (error, response, body) => {
-//         body = JSON.parse(body);
-//         if(error && response.statusCode != 200){
-//           throw error;
-//         }
+const insertWeatherDark = async(city, timestamp) => {
 
-//         console.log(body);
-
-//         var minTemperature = parseInt(body.main.temp_min);
-//         var maxTemperature = parseInt(body.main.temp_max);
-//         var rain = body.main.humidity;
-//         var dateTime = new Date();
-//         var dateWeather = dateTime.toISOString().slice(0,10);
-
-
-//         let query= 'insert into weather(minTemperature,maxTemperature,city,rain,dateWeather) values($1,$2,$3,$4,$5)';
-//         let values = [minTemperature, maxTemperature, city, rain, dateWeather];
-
-//         result = await pool.query(query, values);
-
-//      });
-// }
-
-const insertWeatherDark = async(city) => {
-
-    urlAPI = 'https://api.darksky.net/forecast/468542072566d71440910f782d9f5130/' + coordenates[city];
+    urlAPI = 'https://api.darksky.net/forecast/468542072566d71440910f782d9f5130/' + coordenates[city] + ',' + timestamp;
     
     request(urlAPI, async (error, response, body) => {
         body = JSON.parse(body);
@@ -58,12 +32,11 @@ const insertWeatherDark = async(city) => {
           throw error;
         }
 
-        console.log(body);
-
         var minTemperature = parseInt(body.currently.temperature);
         var maxTemperature = parseInt(body.currently.temperature);
-        var rain = parseInt(body.currently.humidity);
-        var dateTime = new Date();
+        var rain = parseFloat(body.currently.humidity)*100;        //check percentage
+        
+        var dateTime = new Date(timestamp*1000);
         var dateWeather = dateTime.toISOString().slice(0,10);
 
 
@@ -75,6 +48,14 @@ const insertWeatherDark = async(city) => {
      });
 }
 
+const insertWeekWeather = async(city,timestamp) => {
+
+  for(let i = 0; i < 7; i++){
+
+    insertWeatherDark(city,timestamp);
+    timestamp -= 86400;
+  }
+}
 
 
 
@@ -88,7 +69,6 @@ const updateWeather = async ()=> {
         cities = result.rows;
 
         for(let i = 0; i < cities.length; i++){
-            console.log(cities[i].city);
 
             try{            
                   insertWeatherDark(cities[i].city);               
@@ -113,7 +93,11 @@ router.post('/register', async (req, res) => {
     let text= 'insert into patient(name,apikey,birthdayDate,city,job) values($1,$2,$3,$4,$5)';
     let values = [name, key, birthday, city, job];
 
+    let timestamp = Math.floor(Date.now() / 1000);
+
+    await insertWeekWeather(city, timestamp);
     
+
     pool.query(text, values, (error, result) => {
         if (error) {
             throw error;
@@ -122,6 +106,10 @@ router.post('/register', async (req, res) => {
         res.render('index');
     })
 });
+
+
+
+
 
 /* manage patients page*/
 router.get('/manage', function(req, res) {
@@ -158,9 +146,11 @@ router.get('/:patient/dashboard', async(req, res) => {
         let mood = await utils.getMood(patient);
         let activities = await utils.getActivities(patient);
         let activities_str = JSON.stringify(activities);
+
+        let weather = await utils.getWeather(req.params.patient);
        
   
-        res.render('dashboard', {mood, name, activities, activities_str, patient});
+        res.render('dashboard', {mood, name, activities, activities_str, patient, weather});
 
         
         }

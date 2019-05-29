@@ -7,33 +7,33 @@
         <h6 class="m-0 font-weight-bold text-primary">Pluviosity</h6>
       </div>
       <div class="card-body">
-        <h4 class="small font-weight-bold">Monday <span class="float-right">20%</span></h4>
+        <h4 class="small font-weight-bold">Today <span class="float-right"> {{weather.0.rain}} %</span></h4>
         <div class="progress mb-4">
-          <div class="progress-bar bg-danger" role="progressbar" style="width: 20%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
+          <div class="progress-bar bg-danger" role="progressbar" style="width: {{weather.0.rain}}%" aria-valuenow="{{weather.0.rain}}" aria-valuemin="0" aria-valuemax="100"></div>
         </div>
-        <h4 class="small font-weight-bold">Tuesday <span class="float-right">40%</span></h4>
+        <h4 class="small font-weight-bold">Yesterday <span class="float-right">{{weather.1.rain}}%</span></h4>
         <div class="progress mb-4">
-          <div class="progress-bar bg-warning" role="progressbar" style="width: 40%" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
+          <div class="progress-bar bg-warning" role="progressbar" style="width: {{weather.1.rain}}%" aria-valuenow="{{weather.1.rain}}" aria-valuemin="0" aria-valuemax="100"></div>
         </div>
-        <h4 class="small font-weight-bold">Wednesday <span class="float-right">60%</span></h4>
+        <h4 class="small font-weight-bold">2 days ago <span class="float-right">{{weather.2.rain}}%</span></h4>
         <div class="progress mb-4">
-          <div class="progress-bar" role="progressbar" style="width: 60%" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
+          <div class="progress-bar" role="progressbar" style="width: {{weather.2.rain}}%" aria-valuenow="{{weather.2.rain}}" aria-valuemin="0" aria-valuemax="100"></div>
         </div>
-        <h4 class="small font-weight-bold">Thursday <span class="float-right">80%</span></h4>
+        <h4 class="small font-weight-bold">3 days ago <span class="float-right">{{weather.3.rain}}%</span></h4>
         <div class="progress mb-4">
-          <div class="progress-bar bg-info" role="progressbar" style="width: 80%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
+          <div class="progress-bar bg-info" role="progressbar" style="width: {{weather.3.rain}}%" aria-valuenow="{{weather.3.rain}}" aria-valuemin="0" aria-valuemax="100"></div>
         </div>
-        <h4 class="small font-weight-bold">Friday <span class="float-right">80%</span></h4>
+        <h4 class="small font-weight-bold">4 days ago <span class="float-right">{{weather.4.rain}}%</span></h4>
         <div class="progress mb-4">
-          <div class="progress-bar bg-success" role="progressbar" style="width: 70%" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100"></div>
+          <div class="progress-bar bg-success" role="progressbar" style="width: {{weather.4.rain}}%" aria-valuenow="{{weather.4.rain}}" aria-valuemin="0" aria-valuemax="100"></div>
         </div>
-        <h4 class="small font-weight-bold">Saturday <span class="float-right">80%</span></h4>
+        <h4 class="small font-weight-bold">5 days ago <span class="float-right">{{weather.5.rain}}%</span></h4>
         <div class="progress mb-4">
-          <div class="progress-bar bg-secondary" role="progressbar" style="width: 80%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
+          <div class="progress-bar bg-secondary" role="progressbar" style="width: {{weather.5.rain}}%" aria-valuenow="{{weather.5.rain}}" aria-valuemin="0" aria-valuemax="100"></div>
         </div>
-        <h4 class="small font-weight-bold">Sunday <span class="float-right">0%</span></h4>
+        <h4 class="small font-weight-bold">6 days ago <span class="float-right">{{weather.6.rain}}%</span></h4>
         <div class="progress mb-4">
-          <div class="progress-bar bg-danger" role="progressbar" style="width: 90%" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100"></div>
+          <div class="progress-bar bg-danger" role="progressbar" style="width: {{weather.6.rain}}%" aria-valuenow="{{weather.6.rain}}" aria-valuemin="0" aria-valuemax="100"></div>
         </div>
       </div>
     </div>

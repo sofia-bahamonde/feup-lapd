@@ -19,9 +19,9 @@ getMood = async (patient) => {
 }
 
 
-async function getWeather(patient){
+getWeather = async (patient) => {
 
-    let weather_query = "select weather.rain, weather.dateweather from weather, patient where patient.id=1 and weather.city = patient.city order by dateweather desc limit 3;";
+    let weather_query = `select weather.rain, weather.dateweather from weather, patient where patient.id=${patient} and weather.city = patient.city order by dateweather desc limit 7`;
 
     let result2 = await pool.query(weather_query);
 
@@ -39,7 +39,7 @@ getActivities = async (patient) => {
     let activities = response.rows;
     let total =0;
 
-    color = ['text-primary', 'text-success', 'text-info', 'text-secondary', 'text-warning' , 'text-danger' ];
+    color = ['#4e73df', '#1cc88a', '#5a5c69',  '#36b9cc' ,'#e74a3b', '#858796' ];
 
     for(let i =0; i < activities.length; i++){
       activities[i].color = color[i];  

@@ -12,8 +12,7 @@ var myPieChart = new Chart(ctx, {
     labels: activities.map(a => a.name),
     datasets: [{
       data: activities.map(a => a.duration),
-      backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc'],
-      hoverBackgroundColor: ['#2e59d9', '#17a673', '#2c9faf'],
+      backgroundColor: activities.map(a => a.color),
       hoverBorderColor: "rgba(234, 236, 244, 1)",
     }],
   },
