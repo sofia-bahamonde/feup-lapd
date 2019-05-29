@@ -138,9 +138,7 @@ router.get('/manage', function(req, res) {
 
 /* returns patients */
 router.get('/list', async(req, res) =>{
-    console.log("fsfdf");
-
-    pool.query('select * from patient', (error, result) => {
+      pool.query('select * from patient', (error, result) => {
         if (error) {
             throw error;
         }
