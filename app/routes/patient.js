@@ -170,17 +170,18 @@ router.get('/:patient/calendar', async(req, res) => {
 
 router.get('/:patient/dashboard', async(req, res) => {
     try{
-        let name_query = `SELECT name FROM patient WHERE patient.id=` + req.params.patient;
+        let patient = req.params.patient;
+        let name_query = `SELECT name FROM patient WHERE patient.id=` + patient;
      
         let result = await pool.query(name_query);
         let name = result.rows[0].name;
 
-        let mood = await utils.getMood(req.params.patient);
-        let activities = await utils.getActivities(req.params.patient);
+        let mood = await utils.getMood(patient);
+        let activities = await utils.getActivities(patient);
         let activities_str = JSON.stringify(activities);
        
   
-        res.render('cenas', {mood, name, activities, activities_str});
+        res.render('dashboard', {mood, name, activities, activities_str, patient});
 
         
         }

@@ -57,7 +57,6 @@ getActivities = async (patient) => {
 }
 
 
-
 module.exports ={
     getMood: getMood,
     getActivities: getActivities,
