@@ -85,6 +85,7 @@ const updateWeather = async ()=> {
 
 /* creates a new patient in the databse */
 router.post('/register', async (req, res) => {
+  try{
     let name = req.body.name;
     let key = req.body.key;
     let city = req.body.city;
@@ -98,14 +99,21 @@ router.post('/register', async (req, res) => {
 
     await insertWeekWeather(city, timestamp);
     
+    await pool.query(text,values);
+    let result =  await pool.query('select * from patient');
+    let users = result.rows;
+      res.render('patient/list_patients', {users});
+    // pool.query(text, values, (error, result) => {
+    //     if (error) {
+    //         throw error;
+    //     }
 
-    pool.query(text, values, (error, result) => {
-        if (error) {
-            throw error;
-        }
-
-        res.render('index');
-    })
+    //     res.render('index');
+    // })
+  }
+  catch(err){
+    console.log(err)
+  }
 });
 
 
