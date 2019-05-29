@@ -1,18 +1,8 @@
 var express = require('express');
 var router = express.Router();
 var pool = require('../database.js');
-const {google} = require('googleapis');
-const fs = require('fs');
-const readline = require('readline');
 var request = require('request');
-var user = 0;
-var categories = Object.freeze({"Sports":1, "Sleep":2, "Social":3, "Work":4,"Relax":5});
-
 var utils = require('../utils.js');
-
-
-let url = 'http://api.openweathermap.org/data/2.5/weather?q='
-let appId = 'appid=eb0ee711a1bef9907ac2aa0d6f223400';
 
 var coordenates = Object.freeze({"Lisboa": "38.744098,-9.158084", 
                                 "Porto":"41.162147,-8.621652" , 
@@ -20,34 +10,10 @@ var coordenates = Object.freeze({"Lisboa": "38.744098,-9.158084",
                                 "Aveiro":"40.628093,-8.643259"});
 
 
-// If modifying these scopes, delete token.json.
-const SCOPES = ['https://www.googleapis.com/auth/calendar.readonly'];
-// The file token.json stores the user's access and refresh tokens, and is
-// created automatically when the authorization flow completes for the first
-// time.
-
-
-
 /* register patient page */
 router.get('/register/form', function(req, res) {
     res.render('patient/register_patient');
   });
-
-router.get('/activities', async(req, res) =>{
-  if(!req.body)
-    res.status(400)
-  try{
-  const query = `SELECT Category.name, SUM((Events.finalDate -Events.initialDate)) AS duration FROM Events JOIN CategoryEvent ON CategoryEvent.eventId = Events.id JOIN Category ON CategoryEvent.categoryId = Category.id WHERE Events.patient=${req.body.patientId} AND Events.initialDate > ${req.body.date1} AND Events.finalDate < ${req.body.date2}GROUP BY Category.name;`
-  let response = await pool.query(query)
-  res.status(200)
-  res.send(response.rows)
-  }
-  catch(err){
-    res.status(400)
-    res.send(err.msg)
-  }
-});
-
 
 router.get('/events',async(req,res) =>{
   if(!req.body)
@@ -204,12 +170,15 @@ router.get('/:patient/dashboard', async(req, res) => {
     try{
         let name_query = `SELECT name FROM patient WHERE patient.id=` + req.params.patient;
      
-        let result1 = await pool.query(name_query);
-        let name = result1.rows[0].name;
+        let result = await pool.query(name_query);
+        let name = result.rows[0].name;
 
         let mood = await utils.getMood(req.params.patient);
+        let activities = await utils.getActivities(req.params.patient);
+        let activities_str = JSON.stringify(activities);
+       
   
-        res.render('dashboard/mood', {mood, name });
+        res.render('cenas', {mood, name, activities, activities_str});
 
         
         }

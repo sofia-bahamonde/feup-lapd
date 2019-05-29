@@ -69,13 +69,11 @@ function appendHtml(el, str) {
 
 $('#list_patients').on('click', function(event) {
     event.preventDefault();
-    console.log("fsdfsd");
      $.ajax({
         url: '/patient/list',
         method: 'GET',
         }).done(function(res) {
             if (res.success) {
-            console.log(res.users);
             
             var list = document.getElementById("patients");
             list.innerHTML = '';

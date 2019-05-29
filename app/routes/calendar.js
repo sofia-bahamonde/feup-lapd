@@ -4,7 +4,6 @@ var pool = require('../database.js');
 const {google} = require('googleapis');
 const fs = require('fs');
 const readline = require('readline');
-var request = require('request');
 var user = 0;
 
 const SCOPES = ['https://www.googleapis.com/auth/calendar.readonly'];
