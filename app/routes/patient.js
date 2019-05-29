@@ -33,22 +33,6 @@ router.get('/register/form', function(req, res) {
     res.render('patient/register_patient');
   });
 
-router.get('/activities', async(req, res) =>{
-  if(!req.body)
-    res.status(400)
-  try{
-  const query = `SELECT Category.name, SUM((Events.finalDate -Events.initialDate)) AS duration FROM Events JOIN CategoryEvent ON CategoryEvent.eventId = Events.id JOIN Category ON CategoryEvent.categoryId = Category.id WHERE Events.patient=${req.body.patientId} AND Events.initialDate > ${req.body.date1} AND Events.finalDate < ${req.body.date2}GROUP BY Category.name;`
-  let response = await pool.query(query)
-  res.status(200)
-  res.send(response.rows)
-  }
-  catch(err){
-    res.status(400)
-    res.send(err.msg)
-  }
-});
-
-
 router.get('/update/:patientId', async(req, res) =>{
     const clientId = req.params.patientId
     let query =`SELECT apiKey FROM Patient WHERE id=${clientId}`
@@ -234,10 +218,11 @@ router.get('/:patient/dashboard', async(req, res) => {
     try{
         let name_query = `SELECT name FROM patient WHERE patient.id=` + req.params.patient;
      
-        let result1 = await pool.query(name_query);
-        let name = result1.rows[0].name;
+        let result = await pool.query(name_query);
+        let name = result.rows[0].name;
 
         let mood = await utils.getMood(req.params.patient);
+        let activities = await utils.getActivities(req.params.patient);
   
         res.render('dashboard/mood', {mood, name });
 

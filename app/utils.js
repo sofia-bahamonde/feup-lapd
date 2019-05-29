@@ -1,13 +1,13 @@
 var pool = require('./database.js');
 
-async function getMood(patient){
+getMood = async (patient) => {
 
-    let mood_query = "select mood.value, EXTRACT (YEAR FROM mood.moodDate) AS YEAR, EXTRACT (MONTH FROM mood.moodDate) AS MONTH, EXTRACT (DAY FROM mood.moodDate) AS DAY, mood.description " +
+    let query = "select mood.value, EXTRACT (YEAR FROM mood.moodDate) AS YEAR, EXTRACT (MONTH FROM mood.moodDate) AS MONTH, EXTRACT (DAY FROM mood.moodDate) AS DAY, mood.description " +
     "from mood inner join patient on  mood.patient = patient.id where mood.patient=" + patient;
    
-    let result2 = await pool.query(mood_query);
+    let result = await pool.query(query);
   
-    let mood = result2.rows;
+    let mood = result.rows;
   
     for(let i =0; i <mood.length; i++){
       mood[i].date = mood[i].day + "/" + mood[i].month + "/" + mood[i].year;
@@ -18,8 +18,18 @@ async function getMood(patient){
     return mood;
   }
 
+getActivities = async (patient) => {
+    const query = `SELECT Category.name, SUM((Events.finalDate -Events.initialDate)) AS duration FROM Events JOIN CategoryEvent ON CategoryEvent.eventId = Events.id JOIN Category ON CategoryEvent.categoryId = Category.id WHERE Events.patient=${patient} GROUP BY Category.name;`
+    let response = await pool.query(query);
+
+    console.log(response.rows);
+
+    return response.rows;
+}
+
 
 
 module.exports ={
-    getMood: getMood
+    getMood: getMood,
+    getActivities: getActivities
 }

@@ -31,8 +31,6 @@ function number_format(number, decimals, dec_point, thousands_sep) {
 var ctx = document.getElementById("myAreaChart");
 var mood= $('#myAreaChart').data('mood');
 var days = mood.map(a => a.day);
-console.log(days);
-console.log(mood);
 var myLineChart = new Chart(ctx, {
   type: 'line',
   data: {
