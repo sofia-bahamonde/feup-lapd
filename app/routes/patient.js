@@ -21,32 +21,6 @@ router.get('/events',async(req,res) =>{
 });
 
 
-// const insertWeather = async(city) => {
-
-//     url = url+city+"&"+appId;
-    
-//     request(url, async (error, response, body) => {
-//         body = JSON.parse(body);
-//         if(error && response.statusCode != 200){
-//           throw error;
-//         }
-
-//         console.log(body);
-
-//         var minTemperature = parseInt(body.main.temp_min);
-//         var maxTemperature = parseInt(body.main.temp_max);
-//         var rain = body.main.humidity;
-//         var dateTime = new Date();
-//         var dateWeather = dateTime.toISOString().slice(0,10);
-
-
-//         let query= 'insert into weather(minTemperature,maxTemperature,city,rain,dateWeather) values($1,$2,$3,$4,$5)';
-//         let values = [minTemperature, maxTemperature, city, rain, dateWeather];
-
-//         result = await pool.query(query, values);
-
-//      });
-// }
 
 const insertWeatherDark = async(city, timestamp) => {
 
@@ -57,8 +31,6 @@ const insertWeatherDark = async(city, timestamp) => {
         if(error && response.statusCode != 200){
           throw error;
         }
-
-        console.log(body);
 
         var minTemperature = parseInt(body.currently.temperature);
         var maxTemperature = parseInt(body.currently.temperature);
@@ -87,8 +59,6 @@ const insertWeekWeather = async(city,timestamp) => {
 
 
 
-
-
 const updateWeather = async ()=> {
 
     response = await pool.query('select distinct city from patient', (error, result) => {
@@ -99,7 +69,6 @@ const updateWeather = async ()=> {
         cities = result.rows;
 
         for(let i = 0; i < cities.length; i++){
-            console.log(cities[i].city);
 
             try{            
                   insertWeatherDark(cities[i].city);               
@@ -157,9 +126,7 @@ router.get('/manage', function(req, res) {
 
 /* returns patients */
 router.get('/list', async(req, res) =>{
-    console.log("fsfdf");
-
-    pool.query('select * from patient', (error, result) => {
+      pool.query('select * from patient', (error, result) => {
         if (error) {
             throw error;
         }
@@ -168,42 +135,22 @@ router.get('/list', async(req, res) =>{
     
   });
 
-router.get('/:patient/calendar', async(req, res) => {
- 
-  try{
-
-    let calendarEvents  = await getEventsPatient(req.params.patient,1558310400, 1559347200);
-
-    calendarEvents = JSON.stringify(calendarEvents);
-
-    res.render('calendar', {calendarEvents});
-
-  }
-  catch(err){
-    console.log(err)
-  }
-
-});
-
-
-
 router.get('/:patient/dashboard', async(req, res) => {
     try{
-        let name_query = `SELECT name FROM patient WHERE patient.id=` + req.params.patient;
+        let patient = req.params.patient;
+        let name_query = `SELECT name FROM patient WHERE patient.id=` + patient;
      
         let result = await pool.query(name_query);
         let name = result.rows[0].name;
 
-        let mood = await utils.getMood(req.params.patient);
-        let activities = await utils.getActivities(req.params.patient);
+        let mood = await utils.getMood(patient);
+        let activities = await utils.getActivities(patient);
         let activities_str = JSON.stringify(activities);
 
         let weather = await utils.getWeather(req.params.patient);
-
-        console.log(weather);
        
   
-        res.render('cenas', {mood, name, activities, activities_str, weather});
+        res.render('dashboard', {mood, name, activities, activities_str, patient, weather});
 
         
         }
@@ -212,23 +159,6 @@ router.get('/:patient/dashboard', async(req, res) => {
         }
 });
    
-
-  
-
-const getEventsPatient = async(patientId,date1, date2) =>{
-  const query = `SELECT Events.summary as title, Events.initialDate as start, Events.finalDate as end, Category.color FROM
-  Events JOIN CategoryEvent ON Events.id = categoryEvent.eventId JOIN Category ON Category.id = categoryEvent.categoryId Where Events.patient=${patientId} AND
-  Events.initialDate > ${date1} AND Events.finalDate < ${date2};`
-  let result = await pool.query(query)
-  console.log(result.rows)
-  
-  for(let i= 0; i<result.rows.length; i++){
-    result.rows[i].start = new Date(result.rows[i].start*1000).toJSON();
-    result.rows[i].end = new Date(result.rows[i].end*1000).toJSON();
-  }
-  return result.rows;
-  
-}
 
 
 module.exports = router;

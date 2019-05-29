@@ -16,7 +16,8 @@
               <th>Job</th>
               <th>City</th>
               <th>Birthdate</th>
-              <th class=" d-flex justify-content-center">Add iMood</th>
+              <th><p class="d-flex justify-content-center mb-0">Update Information</p></th>
+              <th><p class="d-flex justify-content-center mb-0">Update Information</p></th>
             </tr>
           </thead>
           <tbody>
@@ -26,10 +27,19 @@
               <td>{{this.job}}</td>
               <td>{{this.city}}</td>
               <td>{{this.birthdaydate}}</td>
-              <td class=" d-flex justify-content-center">
+               <td>
+                 <div class="d-flex justify-content-center mb-0">
+                    <a class="btn btn-success btn-circle btn-sm"  data-id={{this.id}} href="/calendar/update/{{this.id}}">
+                      <i class="fas fa-upload "></i>
+                    </a>
+                  </div>
+              </td>
+              <td>
+                <div class="d-flex justify-content-center mb-0">
                   <a class="btn btn-primary btn-circle btn-sm"  data-id={{this.id}} href="/mood/{{this.id}}/form">
                     <i class="fas fa-plus"></i>
                   </a>
+                </div>
               </td>
             </tr>
             {{/each}}
