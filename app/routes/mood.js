@@ -54,7 +54,6 @@ try{
         if (error) {
             throw error;
         }
-        res.render('index');
      })
 
     }

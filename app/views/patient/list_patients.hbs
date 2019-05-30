@@ -17,7 +17,6 @@
               <th>City</th>
               <th>Birthdate</th>
               <th><p class="d-flex justify-content-center mb-0">Update Information</p></th>
-              <th><p class="d-flex justify-content-center mb-0">Upload iMood</p></th>
             </tr>
           </thead>
           <tbody>
@@ -34,18 +33,6 @@
                     </a>
                   </div>
               </td>
-              <td>
-                <div class="d-flex justify-content-center mb-0">
-                  <form>
-                    <input type="file"  id="file" class="inputfile file{{this.id}}" data-id={{this.id}}>
-                    <label for="file">
-                      <a class="btn btn-primary btn-circle btn-sm">
-                        <i class="fas fa-plus "></i>
-                      </a>
-                    </label>
-                </form>
-                </div>
-              </td>
             </tr>
             {{/each}}
           </tbody>
@@ -55,125 +42,3 @@
   </div>
 
 </div>
-
-
-<script>
-
-function CSVToArray( strData, strDelimiter ){
-    // Check to see if the delimiter is defined. If not,
-    // then default to comma.
-    strDelimiter = (strDelimiter || ",");
-
-    // Create a regular expression to parse the CSV values.
-    var objPattern = new RegExp(
-        (
-            // Delimiters.
-            "(\\" + strDelimiter + "|\\r?\\n|\\r|^)" +
-
-            // Quoted fields.
-            "(?:\"([^\"]*(?:\"\"[^\"]*)*)\"|" +
-
-            // Standard fields.
-            "([^\"\\" + strDelimiter + "\\r\\n]*))"
-        ),
-        "gi"
-        );
-
-
-    // Create an array to hold our data. Give the array
-    // a default empty first row.
-    var arrData = [];
-    var headers = [];
-    var headersFound = false;
-    var headerIndex = 0;
-
-    // Create an array to hold our individual pattern
-    // matching groups.
-    var arrMatches = null;
-
-
-    // Keep looping over the regular expression matches
-    // until we can no longer find a match.
-    while (arrMatches = objPattern.exec( strData )){
-
-        // Get the delimiter that was found.
-        var strMatchedDelimiter = arrMatches[ 1 ];
-
-        // Check to see if the given delimiter has a length
-        // (is not the start of string) and if it matches
-        // field delimiter. If id does not, then we know
-        // that this delimiter is a row delimiter.
-        if (strMatchedDelimiter.length && strMatchedDelimiter !== strDelimiter){
-
-            // Since we have reached a new row of data,
-            // add an empty row to our data array.
-            arrData.push( {} );
-            headersFound = true;
-            headerIndex = 0;
-        }
-
-        var strMatchedValue;
-
-        // Now that we have our delimiter out of the way,
-        // let's check to see which kind of value we
-        // captured (quoted or unquoted).
-        if (arrMatches[ 2 ]){
-
-            // We found a quoted value. When we capture
-            // this value, unescape any double quotes.
-            strMatchedValue = arrMatches[ 2 ].replace(new RegExp( "\"\"", "g" ),"\"");
-
-        } else {
-
-            // We found a non-quoted value.
-            strMatchedValue = arrMatches[ 3 ];
-
-        }
-
-
-        // Now that we have our value string, let's add
-        // it to the data array.
-        if (!headersFound) {
-          headers.push(strMatchedValue);
-        } else {
-          arrData[arrData.length -1][headers[headerIndex]] = strMatchedValue;
-          headerIndex ++;
-        }
-    }
-
-    // Return the parsed data.
-    return( arrData );
-}
-
-  $(".file4").change(function(){
-    var file = this.files[0];
-    var reader = new FileReader();
-    var id= event.target.getAttribute('data-id');
-    reader.addEventListener("load", function () {
-      let json = CSVToArray(reader.result);
-      console.log(json);
-      json.pop();
-
-       $.ajax({
-        url: `/mood/${id}/update`,
-        dataType: 'json',
-        type: 'post',
-        contentType: 'application/json',
-        data: JSON.stringify(json),
-        processData: false,
-        }).done(function(res) {
-            if (res.success) {
-            
-              console.log("success!!");
-            
-        } else {
-            console.log('error...ajax');
-            }
-})
-    }, false);
-
-  if (file) {
-    reader.readAsText(file);
-  }
- });
-</script>

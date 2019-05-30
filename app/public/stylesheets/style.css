@@ -12017,11 +12017,11 @@ input[type=date]::-webkit-inner-spin-button {
 }
 
 .inputfile + label {
-  padding: 0.3em;
-  font-size: 1em;
-  font-weight: 700;
+  color: #36b9cc;
+}
+
+.inputfile + label:hover {
   color: white;
-  display: inline-block;
 }
 
 
