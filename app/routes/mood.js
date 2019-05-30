@@ -25,6 +25,8 @@ router.post('/:patient/update', function(req, res) {
     let dates =[];
     let descriptions =[];
 
+    console.log(req.body);
+
 try{
 
     for(let i =0; i < iMoodJSON.length; i++ ){
@@ -41,7 +43,7 @@ try{
     let patient = req.params.patient;
     let query= 'insert into mood(value,moodDate,patient,description) values';
 
-    
+
 
     for(let i=0; i < iMoodJSON.length; i++){
         query += "(" + levels[i] + ", to_date(\'" + dates[i] + "\', \'YYYY-MM-DD\')" + ", " + patient + ", \'" + descriptions[i].toString() +"\'),";

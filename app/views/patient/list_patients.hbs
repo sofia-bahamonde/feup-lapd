@@ -23,7 +23,7 @@
           <tbody>
             {{#each users}}
             <tr>
-              <td> <a href="/patient/{{this.id}}/dashboard">{{this.name}}</a></td>
+              <td>{{this.name}}</td>
               <td>{{this.job}}</td>
               <td>{{this.city}}</td>
               <td>{{this.birthdaydate}}</td>
@@ -37,7 +37,7 @@
               <td>
                 <div class="d-flex justify-content-center mb-0">
                   <form>
-                    <input type="file" name="file" id="file" class="inputfile" data-id={{this.id}}>
+                    <input type="file"  id="file" class="inputfile file{{this.id}}" data-id={{this.id}}>
                     <label for="file">
                       <a class="btn btn-primary btn-circle btn-sm">
                         <i class="fas fa-plus "></i>
@@ -145,14 +145,14 @@ function CSVToArray( strData, strDelimiter ){
     return( arrData );
 }
 
-  $("#file").change(function(){
+  $(".file4").change(function(){
     var file = this.files[0];
     var reader = new FileReader();
     var id= event.target.getAttribute('data-id');
     reader.addEventListener("load", function () {
       let json = CSVToArray(reader.result);
       console.log(json);
-  json.pop();
+      json.pop();
 
        $.ajax({
         url: `/mood/${id}/update`,
