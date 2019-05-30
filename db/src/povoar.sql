@@ -6,8 +6,8 @@ INSERT INTO Patient(id,name,apiKey,birthdayDate,city,job,lastUpdate) VALUES (3,'
 INSERT INTO Patient(id,name,apiKey,birthdayDate,city,job,lastUpdate) VALUES (4,'Joana Silva','sdasdfsdfsdfd','1964/08/10','Porto','camionista',1557060790); 
 INSERT INTO Patient(id,name,apiKey,birthdayDate,city,job,lastUpdate) VALUES (5,'João Carlos','sdasdfsdfsdfd','1980/01/28','Porto','constultor',1557060790); 
 
-INSERT INTO Category(id,name,color) VALUES(1,'Sports','red');
-INSERT INTO Category(id,name,color) VALUES(2,'Sleep','brown');
-INSERT INTO Category(id,name,color) VALUES(3,'Social','green');
-INSERT INTO Category(id,name,color) VALUES(4,'Work','yellow');
-INSERT INTO Category(id,name,color) VALUES(5,'Relax','blue');
+INSERT INTO Category(id,name,color) VALUES(1,'Sports','#e74a3b');
+INSERT INTO Category(id,name,color) VALUES(2,'Sleep','#858796');
+INSERT INTO Category(id,name,color) VALUES(3,'Social','#1cc88a');
+INSERT INTO Category(id,name,color) VALUES(4,'Work','#f6c23e');
+INSERT INTO Category(id,name,color) VALUES(5,'Relax','#4e73df');
